@@ -17,5 +17,6 @@ module.exports = {
         checksVoidReturn: false,
       },
     ],
+    '@typescript-eslint/no-var-requires': 0,
   },
 };
