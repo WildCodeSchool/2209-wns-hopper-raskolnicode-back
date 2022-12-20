@@ -18,5 +18,7 @@ module.exports = {
       },
     ],
     '@typescript-eslint/no-var-requires': 0,
+    '@typescript-eslint/strict-boolean-expressions': 0
   },
 };
+
