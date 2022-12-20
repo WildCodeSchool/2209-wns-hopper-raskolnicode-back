@@ -1,15 +1,17 @@
+import { Post } from "./entities/Post";
 import { User } from "./entities/User";
 import { DataSource } from "typeorm";
 
+
 const datasource = new DataSource({
   type: "postgres",
-  host: "db",
+  host: process.env.POSTGRES_HOST,
   port: 5432,
-  username: "postgres",
-  password: "supersecret",
-  database: "postgres",
+  username: process.env.POSTGRES_USER,
+  password: process.env.POSTGRES_PASSWORD,
+  database: process.env.POSTGRES_DB,
   synchronize: true,
-  entities: [User],
+  entities: [User, Post],
   logging: ["query", "error"],
 });
 
