@@ -39,3 +39,21 @@ export class Blog {
 } 
 
 
+@InputType()
+export class BlogInput {
+
+  @Column()
+  @Field()
+  name: string;
+  @Length(1, 50)
+
+
+  @Column()
+  @Field()
+  description: string;
+  @Length(1, 500)
+
+  @Column()
+  @Field()
+  updated_at: Date;
+}
