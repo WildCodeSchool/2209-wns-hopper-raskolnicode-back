@@ -3,6 +3,10 @@ import { User, UserInput } from "../entities/User";
 import datasource from "../utils";
 import { hash } from "argon2";
 
+
+// Faire relation entre user et comment 
+// Faire relation entre user et blog
+
 @Resolver()
 export class UsersResolver {
   @Mutation(() => User)
@@ -18,3 +22,5 @@ export class UsersResolver {
     return await datasource.getRepository(User).find({});
   }
 }
+
+

@@ -4,13 +4,14 @@ import datasource from "./utils";
 import { buildSchema } from "type-graphql";
 import { UsersResolver } from "./resolvers/Users";
 import { PostsResolver } from "./resolvers/Posts";
+import { BlogsResolver} from "./resolvers/Blogs";
 
 const PORT = 5000;
 
 async function bootstrap(): Promise<void> {
   // ... Building schema here
   const schema = await buildSchema({
-    resolvers: [UsersResolver, PostsResolver],
+    resolvers: [UsersResolver, PostsResolver, BlogsResolver],
   });
 
   // Create the GraphQL server

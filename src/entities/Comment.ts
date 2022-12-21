@@ -1,32 +1,33 @@
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 import { ObjectType, Field, ID, InputType } from "type-graphql";
-import { IsEmail, Length } from "class-validator";
-
-
+import { Length } from "class-validator";
 
 @Entity()
 @ObjectType()
-export class User {
+export class Comment {
   @PrimaryGeneratedColumn()
-  @Field(() => ID)
   id: number;
 
   @Column({ unique: true })
-  @Field()
-  email: string;
+  @Field(() => ID)
+  user_id: number;
 
   @Column()
   @Field()
-  password: string;
-}
+  post_id: number;
+  @Length(1, 50)
 
-@InputType()
-export class UserInput {
+  @Column()
   @Field()
-  @IsEmail()
-  email: string;
+  text: string;
+  @Length(1, 1500)
 
+  @Column()
   @Field()
-  @Length(8, 60)
-  password: string;
-}
+  created_at: Date;
+
+  @Column({ unique: true })
+  @Field()
+  created_by: string;
+
+} 
