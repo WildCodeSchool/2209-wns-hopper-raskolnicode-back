@@ -17,6 +17,23 @@ async function bootstrap(): Promise<void> {
   const server = new ApolloServer({
     schema,
     cors: true,
+    context: ({ req }) => {
+      // get the user token from the headers
+      const authorization = req.headers.authorization || '';
+  
+      if (authorization) {
+        const token = authorization.split(' ').pop()
+        console.log('token', token)
+
+        return { token }
+      }
+
+      return { token: null }
+      // try to retrieve a user with the token
+      // const user = getUser(token);
+      // add the user to the context
+      // return { user };
+    },
   });
 
   // Start the server
