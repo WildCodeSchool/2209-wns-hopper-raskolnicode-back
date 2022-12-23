@@ -1,7 +1,8 @@
-import { Resolver, Mutation, Arg, Query } from "type-graphql";
+import { Resolver, Mutation, Arg, Query, Ctx } from "type-graphql";
 import { User, UserInput } from "../entities/User";
 import datasource from "../utils";
 import { hash, verify } from "argon2";
+import { sign, verify as jwtVerify } from "jsonwebtoken";
 
 @Resolver()
 export class UsersResolver {
@@ -13,10 +14,10 @@ export class UsersResolver {
     return await datasource.getRepository(User).save(data);
   }
 
-  @Mutation(() => User, { nullable: true })
+  @Mutation(() => String, { nullable: true })
   async signIn(
     @Arg("data", () => UserInput) data: UserInput
-  ): Promise<User | null> {
+  ): Promise<string | null> {
     try {
       // because argon doesnt just hash, we can't get the user with its password
       // 1st step : search user by email
@@ -29,7 +30,11 @@ export class UsersResolver {
 
       // 2nd step : compare the user hashed password with the clear password
       if (await verify(user.password, data.password)) {
-        return user
+
+        // Jwt generation
+        const token = sign({ userId: user.id }, process.env.JWT_SECRET_KEY)
+        return token
+
       } else {
         return null
       }
@@ -39,8 +44,30 @@ export class UsersResolver {
     
   }
 
+  @Query(() => User, { nullable: true })
+  async loggedUser(@Ctx() context: { token: string | null }): Promise<User | null> {
+   
+    const token = context.token
+    
+    if (token === null) {
+      return null
+    }
+    
+    const decodedToken: { userId: number } = jwtVerify(token, process.env.JWT_SECRET_KEY) as any
+    const userId = decodedToken.userId
+
+    const user = await datasource.getRepository(User).findOne({ where: { id: userId }})
+    
+    if (!user) {
+      return null
+    }
+    
+    return user
+  }
+
   @Query(() => [User])
   async users(): Promise<User[]> {
     return await datasource.getRepository(User).find({});
   }
+  
 }
