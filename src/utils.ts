@@ -1,6 +1,7 @@
 import { Post } from "./entities/Post";
 import { User } from "./entities/User";
 import { Blog } from "./entities/Blog";
+import { Comment } from "./entities/Comment";
 import { DataSource } from "typeorm";
 
 
@@ -12,7 +13,7 @@ const datasource = new DataSource({
   password: process.env.POSTGRES_PASSWORD,
   database: process.env.POSTGRES_DB,
   synchronize: true,
-  entities: [User, Post, Blog],
+  entities: [User, Post, Blog, Comment],
   logging: ["query", "error"],
 });
 

@@ -1,6 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
 import { ObjectType, Field, ID, InputType } from "type-graphql";
 import { Length } from "class-validator";
+import { Post } from './Post'
+import { User } from './User'
+import { Blog } from './Blog'
+
 
 @Entity()
 @ObjectType()
@@ -30,4 +34,28 @@ export class Comment {
   @Field()
   created_by: string;
 
+  @ManyToOne(() => User, (user) => user.comments, { nullable: true })
+  @Field(() => User, { nullable: true })
+  user: User
+
+
+  @ManyToOne(() => Post, (Post) => Post.comments,  { nullable: true })
+  @Field(() => User, { nullable: true })
+  post: Post
+
+
 } 
+
+
+@InputType()
+export class CommentInput {
+  @Field({ nullable: true })
+  comment: string;
+
+  @Field({ nullable: true })
+  created_at: Date;
+
+  @Field({ nullable: true })
+  updated_at: Date;
+
+}

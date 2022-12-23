@@ -1,6 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
 import { ObjectType, Field, ID, InputType } from "type-graphql";
-import { Length } from "class-validator";
+import { Length, MaxLength } from "class-validator";
+import { User } from "./User";
+
 
 @Entity()
 @ObjectType()
@@ -24,9 +26,9 @@ export class Blog {
 
 
   @Column()
-  @Field()
-  description: string;
-  @Length(1, 500)
+  @Field({ nullable: true })
+  description?: string;
+  @MaxLength(250)
 
 
   @Column()
@@ -36,7 +38,14 @@ export class Blog {
   @Column()
   @Field()
   updated_at: Date;
-} 
+
+
+@ManyToOne(() => User, (user) => user.blog,  {
+  onDelete: 'CASCADE',
+})
+user: User
+
+}
 
 
 @InputType()
@@ -57,3 +66,5 @@ export class BlogInput {
   @Field()
   updated_at: Date;
 }
+
+
