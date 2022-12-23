@@ -1,6 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne } from "typeorm";
 import { ObjectType, Field, ID, InputType } from "type-graphql";
 import { IsBoolean, Length } from "class-validator";
+import { Comment } from "./Comment";
 
 @Entity()
 @ObjectType()
@@ -36,6 +37,11 @@ export class Post {
   @Column()
   @Field()
   updatedAt: Date;
+
+  @ManyToOne(() => Comment, (comment) => comment.user, { nullable: true })
+  @Field(() => [Comment], { nullable: true })
+  comments: Comment[];
+
 }
 
 @InputType()

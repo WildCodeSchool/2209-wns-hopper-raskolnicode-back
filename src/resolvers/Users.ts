@@ -4,6 +4,10 @@ import datasource from "../utils";
 import { hash, verify } from "argon2";
 import { sign, verify as jwtVerify } from "jsonwebtoken";
 
+
+// Faire relation entre user et comment 
+// Faire relation entre user et blog
+
 @Resolver()
 export class UsersResolver {
   @Mutation(() => User)
@@ -71,3 +75,5 @@ export class UsersResolver {
   }
   
 }
+
+
