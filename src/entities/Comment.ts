@@ -19,18 +19,16 @@ export class Comment {
   @Column()
   @Field()
   post_id: number;
-  @Length(1, 50)
 
   @Column()
   @Field()
-  @Length(1, 1500)
   text: string;
 
   @Column()
   @Field()
   created_at: Date;
 
-  @Column({ unique: true })
+  @Column()
   @Field()
   created_by: string;
 
@@ -38,11 +36,9 @@ export class Comment {
   @Field(() => User, { nullable: true })
   user: User
 
-
   @ManyToOne(() => Post, (Post) => Post.comments, { nullable: true })
   @Field(() => User, { nullable: true })
   post: Post
-
 
 }
 
@@ -54,5 +50,4 @@ export class CommentInput {
 
   @Field({ nullable: true })
   created_at: Date;
-
 }

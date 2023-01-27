@@ -23,13 +23,9 @@ export class User {
   @Field(() => [Comment], { nullable: true })
   comments: Comment[];
 
-  @OneToMany(() => Blog, (blog) => blog.user, {
-    onDelete: 'CASCADE',
-  })
-
+  @OneToMany(() => Blog, (blog) => blog.user, { onDelete: 'CASCADE'})
+  
   blog: Blog
-
-
 }
 
 @InputType()

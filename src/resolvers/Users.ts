@@ -56,15 +56,9 @@ export class UsersResolver {
   @Authorized()
   @Query(() => User, { nullable: true })
   async loggedUser(@Ctx() context: IContext): Promise<User | null> {
-    console.log('TOK', context.token)
+    console.log('token loggedUser', context.token)
+    console.log('LoggedUser', context.user)
     return context.user
-  }
-
-  @Authorized()
-  @Mutation()
-  async logout(@Ctx() context: IContext): Promise<null> {
-    context.user = null
-    return null
   }
 
   @Authorized()
