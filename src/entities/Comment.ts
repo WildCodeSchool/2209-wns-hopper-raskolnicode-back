@@ -1,5 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from "typeorm";
-import { ObjectType, Field, ID, InputType } from "type-graphql";
+import { ObjectType, Field, ID, InputType, Authorized } from "type-graphql";
 import { Length } from "class-validator";
 import { Post } from './Post'
 import { User } from './User'

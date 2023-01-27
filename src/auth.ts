@@ -2,8 +2,9 @@ import { AuthChecker } from 'type-graphql'
 import datasource from "./utils";
 import { verify as jwtVerify } from "jsonwebtoken";
 import { User } from "./entities/User";
+import { IContext } from './resolvers/Users';
 
-export const customAuthChecker: AuthChecker<{ token: string | null }> = async (
+export const customAuthChecker: AuthChecker<IContext> = async (
   { root, args, context, info }, roles,
 ) => {
 
@@ -23,6 +24,8 @@ export const customAuthChecker: AuthChecker<{ token: string | null }> = async (
       return false
     }
 
+    context.user = user
+    console.log('context user', user)
     return true
   } catch {
     return false

@@ -1,11 +1,11 @@
-import { Resolver, Mutation, Arg, Query } from "type-graphql";
+import { Resolver, Mutation, Arg, Query, Authorized } from "type-graphql";
 import { User } from "../entities/User";
 import datasource from "../utils";
 import { Comment, CommentInput } from "../entities/Comment";
 
 @Resolver()
 export class CommentsResolver {
-
+  @Authorized()
   @Mutation(() => Comment)
   async createPost(
     @Arg("data", () => CommentInput) data: CommentInput

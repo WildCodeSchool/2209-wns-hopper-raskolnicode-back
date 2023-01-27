@@ -8,6 +8,11 @@ import { sign, verify as jwtVerify } from "jsonwebtoken";
 // Faire relation entre user et comment 
 // Faire relation entre user et blog
 
+export interface IContext {
+  token: string | null,
+  user?: User
+}
+
 @Resolver()
 export class UsersResolver {
   @Mutation(() => User)
@@ -19,9 +24,9 @@ export class UsersResolver {
   }
 
   @Mutation(() => String, { nullable: true })
-  async signIn(
+  async login(
     @Arg("data", () => UserInput) data: UserInput
-  ): Promise<string | null> {
+    ): Promise<string | null> {
     try {
       // because argon doesnt just hash, we can't get the user with its password
       // 1st step : search user by email
@@ -48,11 +53,20 @@ export class UsersResolver {
     
   }
 
-  // @Query(() => User, { nullable: true })
-  // async loggedUser(@Ctx() context: { token: string | null }): Promise<User | null> {
-      
-  // }
-  
+  @Authorized()
+  @Query(() => User, { nullable: true })
+  async loggedUser(@Ctx() context: IContext): Promise<User | null> {
+    console.log('TOK', context.token)
+    return context.user
+  }
+
+  @Authorized()
+  @Mutation()
+  async logout(@Ctx() context: IContext): Promise<null> {
+    context.user = null
+    return null
+  }
+
   @Authorized()
   @Query(() => [User])
   async users(): Promise<User[]> {
