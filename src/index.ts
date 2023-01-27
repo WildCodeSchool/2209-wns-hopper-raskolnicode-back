@@ -6,6 +6,7 @@ import { UsersResolver } from "./resolvers/Users";
 import { PostsResolver } from "./resolvers/Posts";
 import { BlogsResolver} from "./resolvers/Blogs";
 import { CommentsResolver } from "./resolvers/Comments";
+import { customAuthChecker } from "./auth";
 
 const PORT = 5000;
 
@@ -13,6 +14,7 @@ async function bootstrap(): Promise<void> {
   // ... Building schema here
   const schema = await buildSchema({
     resolvers: [UsersResolver, PostsResolver, BlogsResolver, CommentsResolver],
+    authChecker: customAuthChecker
   });
 
   // Create the GraphQL server
