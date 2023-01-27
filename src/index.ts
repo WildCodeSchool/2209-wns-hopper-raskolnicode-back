@@ -25,7 +25,7 @@ async function bootstrap(): Promise<void> {
   
       if (authorization) {
         const token = authorization.split(' ').pop()
-        console.log('token', token)
+        // console.log('token', token)
 
         return { token }
       }

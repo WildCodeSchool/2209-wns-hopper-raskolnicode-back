@@ -3,6 +3,7 @@ import { ObjectType, Field, ID, InputType } from "type-graphql";
 import { Length, MaxLength } from "class-validator";
 import { User } from "./User";
 
+const today = new Date()
 
 @Entity()
 @ObjectType()
@@ -10,61 +11,42 @@ export class Blog {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
-  @Field(() => ID)
-  user_id: number;
-
-
-  @Column({ unique: true })
-  @Field()
-  created_by: string;
-
   @Column()
   @Field()
+  @MaxLength(200)
   name: string;
-  @Length(1, 50)
-
 
   @Column()
   @Field({ nullable: true })
-  description?: string;
   @MaxLength(250)
+  description?: string;
 
-
-  @Column()
-  @Field()
+  @Column({default: today})
+  @Field(() => Date)
   created_at: Date;
 
-  @Column()
-  @Field()
+  @Column({default: today})
+  @Field(() => Date)
   updated_at: Date;
 
-
-@ManyToOne(() => User, (user) => user.blog,  {
-  onDelete: 'CASCADE',
-})
-user: User
+  @ManyToOne(() => User, (user) => user.blog,  { onDelete: 'CASCADE' })
+  @Field(() => User)
+  user: User
 
 }
-
 
 @InputType()
 export class BlogInput {
 
-  @Column()
   @Field()
-  name: string;
   @Length(1, 50)
+  name: string;
 
-
-  @Column()
   @Field()
-  description: string;
   @Length(1, 500)
+  description: string;
 
-  @Column()
-  @Field()
-  updated_at: Date;
+  // try userId with authorization decorator for role admin
 }
 
 

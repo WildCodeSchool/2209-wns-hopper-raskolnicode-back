@@ -23,8 +23,8 @@ export class Comment {
 
   @Column()
   @Field()
-  text: string;
   @Length(1, 1500)
+  text: string;
 
   @Column()
   @Field()
@@ -39,12 +39,12 @@ export class Comment {
   user: User
 
 
-  @ManyToOne(() => Post, (Post) => Post.comments,  { nullable: true })
+  @ManyToOne(() => Post, (Post) => Post.comments, { nullable: true })
   @Field(() => User, { nullable: true })
   post: Post
 
 
-} 
+}
 
 
 @InputType()
@@ -54,8 +54,5 @@ export class CommentInput {
 
   @Field({ nullable: true })
   created_at: Date;
-
-  @Field({ nullable: true })
-  updated_at: Date;
 
 }
