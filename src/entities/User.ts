@@ -23,7 +23,7 @@ export class User {
   @Field(() => [Comment], { nullable: true })
   comments: Comment[];
 
-  @OneToMany(() => Blog, (blog) => blog.user,  {
+  @OneToMany(() => Blog, (blog) => blog.user, {
     onDelete: 'CASCADE',
   })
 

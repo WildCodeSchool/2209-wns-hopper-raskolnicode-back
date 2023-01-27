@@ -2,6 +2,7 @@ import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne } from "ty
 import { ObjectType, Field, ID, InputType } from "type-graphql";
 import { IsBoolean, Length } from "class-validator";
 import { Comment } from "./Comment";
+import { Blog } from "./Blog";
 
 @Entity()
 @ObjectType()
@@ -33,16 +34,28 @@ export class Post {
   @Column()
   @Field()
   createdAt: Date;
-  
+
   @Column()
   @Field()
   updatedAt: Date;
+
+
+
+
 
   @ManyToOne(() => Comment, (comment) => comment.user, { nullable: true })
   @Field(() => [Comment], { nullable: true })
   comments: Comment[];
 
+
+  @OneToMany(() => Blog, (blog) => blog.user, { nullable: false })
+  @Field(() => Blog, { nullable: false })
+  blog: Blog;
+
+
 }
+
+
 
 @InputType()
 export class PostInput {
