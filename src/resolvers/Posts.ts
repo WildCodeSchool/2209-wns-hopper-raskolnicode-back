@@ -20,8 +20,22 @@ export class PostsResolver {
       }
   }
 
+  @Authorized()
+   @Mutation(() => Post, { nullable: true })
+    async deletePost(@Arg("id", () => ID) id: number): Promise<Post | void> {
+    const post = await datasource
+      .getRepository(Post)
+      .findOne({ where: { id } });
+    
+    if (post === null) {
+      throw new Error('Il n\'y a pas de d\'article pour cette recherche')
+    }
+
+    return await post.remove();
+  }
+
   @Query(() => [Post])
-  async posts(): Promise<Post[]> {
+  async getPosts(): Promise<Post[]> {
     return await datasource.getRepository(Post).find({});
   }
 }
