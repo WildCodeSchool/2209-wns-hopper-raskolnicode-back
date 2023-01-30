@@ -4,6 +4,8 @@ import { IsBoolean, Length } from "class-validator";
 import { Comment } from "./Comment";
 import { Blog } from "./Blog";
 
+const today = new Date()
+
 @Entity()
 @ObjectType()
 export class Post {
@@ -31,24 +33,19 @@ export class Post {
   @Field()
   isArchived: boolean;
 
-  @Column()
-  @Field()
-  createdAt: Date;
+  @Column({default: today})
+  @Field(() => Date)
+  created_at: Date;
 
-  @Column()
-  @Field()
-  updatedAt: Date;
-
-
-
-
+  @Column({default: today})
+  @Field(() => Date)
+  updated_at: Date;
 
   @ManyToOne(() => Comment, (comment) => comment.user, { nullable: true })
   @Field(() => [Comment], { nullable: true })
   comments: Comment[];
 
-
-  @OneToMany(() => Blog, (blog) => blog.user, { nullable: false })
+  @ManyToOne(() => Blog, (blog) => blog.posts, { nullable: false })
   @Field(() => Blog, { nullable: false })
   blog: Blog;
 
@@ -75,6 +72,7 @@ export class PostInput {
   @Field()
   image: string;
 
+  @Field()
   @IsBoolean()
   isArchived: boolean;
 }
