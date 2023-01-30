@@ -1,4 +1,4 @@
-import { Resolver, Mutation, Arg, Query, Authorized } from "type-graphql";
+import { Resolver, Mutation, Arg, Query, Authorized, ID } from "type-graphql";
 import { User } from "../entities/User";
 import datasource from "../utils";
 import { Blog, BlogInput } from "../entities/Blog";
@@ -18,6 +18,19 @@ export class BlogsResolver {
       const blog = { ...data, user }
       return await datasource.getRepository(Blog).save(blog)
     }
+  }
+
+   @Mutation(() => Blog, { nullable: true })
+  async deleteBlog(@Arg("id", () => ID) id: number): Promise<Blog | null> {
+    const blog = await datasource
+      .getRepository(Blog)
+      .findOne({ where: { id } });
+
+    if (blog === null) {
+      return null;
+    }
+
+    return await datasource.getRepository(Blog).remove(blog);
   }
   
   @Authorized()
