@@ -24,4 +24,15 @@ export class PostsResolver {
   async posts(): Promise<Post[]> {
     return await datasource.getRepository(Post).find({});
   }
+
+  
+  @Query(() => Post, { nullable: true })
+  async getpost(@Arg("postId", () => ID) id: number): Promise<Post | null> {
+    const post = await datasource.getRepository(Post).findOne({ where: { id }})
+
+    if (post === null) {
+      throw new Error('Il n\'y a pas d\'article pour cette recherche')
+    }
+    return post
+  }
 }
