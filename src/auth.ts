@@ -4,10 +4,13 @@ import { verify as jwtVerify } from "jsonwebtoken";
 import { User } from "./entities/User";
 import { IContext } from './resolvers/Users';
 
+// Available Roles :
+// - USER
+// - ADMIN
+
 export const customAuthChecker: AuthChecker<IContext> = async (
   { root, args, context, info }, roles,
 ) => {
-
   const token = context.token
 
   if (token === null || token === '') {
@@ -15,9 +18,11 @@ export const customAuthChecker: AuthChecker<IContext> = async (
   }
 
   try {
+
     const decodedToken: { userId: number } = jwtVerify(
       token, process.env.JWT_SECRET_KEY
     ) as any
+
     const userId = decodedToken.userId
 
     const user = await datasource.getRepository(User).findOne({
@@ -29,7 +34,13 @@ export const customAuthChecker: AuthChecker<IContext> = async (
     }
 
     context.user = user
+
+    if (roles.length > 0 && !roles.includes(user.role)) {
+      return false
+    }
+
     return true
+
   } catch {
     return false
   }

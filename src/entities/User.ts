@@ -19,13 +19,17 @@ export class User {
   @Field()
   password: string;
 
+  @Column({ default: "USER" })
+  @Field()
+  role: string;
+
   @OneToMany(() => Comment, (comment) => comment.user, { nullable: true })
   @Field(() => [Comment], { nullable: true })
   comments: Comment[];
 
   @OneToMany(() => Blog, (blog) => blog.user, { onDelete: 'CASCADE'})
-  
   blog: Blog
+
 }
 
 @InputType()
