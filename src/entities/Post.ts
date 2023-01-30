@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, BaseEntity } from "typeorm";
 import { ObjectType, Field, ID, InputType } from "type-graphql";
 import { IsBoolean, Length } from "class-validator";
 import { Comment } from "./Comment";
@@ -8,7 +8,7 @@ const today = new Date()
 
 @Entity()
 @ObjectType()
-export class Post {
+export class Post extends BaseEntity {
   @PrimaryGeneratedColumn()
   @Field(() => ID)
   id: number;
