@@ -5,9 +5,10 @@ import { Comment, CommentInput } from "../entities/Comment";
 
 @Resolver()
 export class CommentsResolver {
+  
   @Authorized()
   @Mutation(() => Comment)
-  async createPost(
+  async createComment(
     @Arg("data", () => CommentInput) data: CommentInput
   ): Promise<Comment> {
     return await datasource.getRepository(Comment).save(data);
