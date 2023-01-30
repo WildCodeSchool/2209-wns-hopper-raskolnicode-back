@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToOne, BaseEntity } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, BaseEntity } from "typeorm";
 import { ObjectType, Field, ID, InputType } from "type-graphql";
 import { IsBoolean, Length } from "class-validator";
 import { Comment } from "./Comment";

@@ -60,7 +60,6 @@ export class BlogsResolver {
     return await datasource.getRepository(Blog).save(blog);
   }
 
-
   @Query(() => Blog, { nullable: true })
   async blog(@Arg("id", () => ID) id: number): Promise<Blog | null> {
     const blog = await datasource
