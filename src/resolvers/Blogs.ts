@@ -1,9 +1,7 @@
-import { Resolver, Mutation, Arg, Query, Authorized, ID } from "type-graphql";
-import { User } from "../entities/User";
+import { Resolver, Mutation, Arg, Query, Authorized, ID, Ctx } from "type-graphql";
 import datasource from "../utils";
 import { Blog, BlogInput } from "../entities/Blog";
 import { IContext } from "./Users";
-import { Ctx } from "type-graphql";
 
 @Resolver()
 export class BlogsResolver {
@@ -19,9 +17,10 @@ export class BlogsResolver {
       return await datasource.getRepository(Blog).save(blog)
     }
   }
+
   @Authorized()
    @Mutation(() => Blog, { nullable: true })
-    async deleteBlog(@Arg("id", () => ID) id: number): Promise<Blog | void> {
+    async deleteBlog(@Arg("id", () => ID) id: number): Promise<Blog> {
     const blog = await datasource
       .getRepository(Blog)
       .findOne({ where: { id } });

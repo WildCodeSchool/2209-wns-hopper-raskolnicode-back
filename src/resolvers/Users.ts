@@ -2,11 +2,7 @@ import { Resolver, Mutation, Arg, Query, Ctx, Authorized } from "type-graphql";
 import { User, UserInput } from "../entities/User";
 import datasource from "../utils";
 import { hash, verify } from "argon2";
-import { sign, verify as jwtVerify } from "jsonwebtoken";
-
-
-// Faire relation entre user et comment 
-// Faire relation entre user et blog
+import { sign } from "jsonwebtoken";
 
 export interface IContext {
   token: string | null,
@@ -22,6 +18,7 @@ export class UsersResolver {
     data.password = await hash(data.password);
     return await datasource.getRepository(User).save(data);
   }
+
   @Mutation(() => String, { nullable: true })
   async login(
     @Arg("data", () => UserInput) data: UserInput
@@ -55,8 +52,6 @@ export class UsersResolver {
   @Authorized()
   @Query(() => User, { nullable: true })
   async loggedUser(@Ctx() context: IContext): Promise<User | null> {
-    console.log('token loggedUser', context.token)
-    console.log('LoggedUser', context.user)
     return context.user
   }
 
