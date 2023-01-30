@@ -27,7 +27,7 @@ export class PostsResolver {
 
   
   @Query(() => Post, { nullable: true })
-  async post(@Arg("PostId", () => ID) id: number): Promise<Post | null> {
+  async getpost(@Arg("postId", () => ID) id: number): Promise<Post | null> {
     const post = await datasource.getRepository(Post).findOne({ where: { id }})
 
     if (post === null) {
