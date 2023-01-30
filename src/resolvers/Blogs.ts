@@ -32,6 +32,36 @@ export class BlogsResolver {
 
     return await blog.remove();
   }
+
+  @Authorized()
+  @Mutation(() => Blog, { nullable: true })
+  async updateBlog(
+    @Arg("id", () => ID) id: number,
+    @Arg("name", { nullable: true }) name: string | null,
+    @Arg("description", { nullable: true }) description: string | null
+  ): Promise<Blog | null> {
+    const blog = await datasource
+      .getRepository(Blog)
+      .findOne({ where: { id } });
+
+    blog.created_at = new Date()
+
+    if (blog === null) {
+      throw new Error('Il n\'y a pas de blog pour cette recherche')
+    }
+
+    if (name != null) {
+      blog.name = name;
+    }
+
+    if (description !== null) {
+      blog.description = description;
+    }
+
+    return await datasource.getRepository(Blog).save(blog);
+  }
+
+
   @Authorized()
   @Query(() => Blog, { nullable: true })
   async blog(@Arg("id", () => ID) id: number): Promise<Blog | null> {
