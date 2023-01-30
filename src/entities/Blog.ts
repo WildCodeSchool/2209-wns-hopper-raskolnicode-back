@@ -1,7 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, BaseEntity } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, BaseEntity, OneToMany } from "typeorm";
 import { ObjectType, Field, ID, InputType } from "type-graphql";
 import { Length, MaxLength } from "class-validator";
 import { User } from "./User";
+import { Post } from "./Post";
 
 const today = new Date()
 
@@ -33,6 +34,9 @@ export class Blog extends BaseEntity {
   @Field(() => User)
   user: User
 
+  @OneToMany(() => Post, (post) => post.blog,  { onDelete: 'CASCADE' })
+  @Field(() => [Post])
+  posts: Post[]
 }
 
 @InputType()

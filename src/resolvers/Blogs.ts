@@ -8,7 +8,7 @@ import { Ctx } from "type-graphql";
 @Resolver()
 export class BlogsResolver {
   @Authorized()
-  @Mutation(() => User)
+  @Mutation(() => Blog)
   async createBlog(
     @Arg("data", () => BlogInput) data: BlogInput,
     @Ctx() context: IContext
@@ -62,7 +62,6 @@ export class BlogsResolver {
   }
 
 
-  @Authorized()
   @Query(() => Blog, { nullable: true })
   async blog(@Arg("id", () => ID) id: number): Promise<Blog | null> {
     const blog = await datasource
@@ -75,9 +74,8 @@ export class BlogsResolver {
     return blog
   }
   
-  @Authorized()
   @Query(() => [Blog])
   async blogs(): Promise<Blog[]> {
-    return await datasource.getRepository(Blog).find({ relations : { user: true } });
+    return await datasource.getRepository(Blog).find({ relations : { user: true , posts: true} });
   }
 }
