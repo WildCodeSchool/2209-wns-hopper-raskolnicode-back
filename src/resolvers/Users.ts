@@ -22,7 +22,6 @@ export class UsersResolver {
     data.password = await hash(data.password);
     return await datasource.getRepository(User).save(data);
   }
-
   @Mutation(() => String, { nullable: true })
   async login(
     @Arg("data", () => UserInput) data: UserInput
