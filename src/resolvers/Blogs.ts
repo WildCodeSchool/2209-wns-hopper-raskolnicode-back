@@ -32,6 +32,18 @@ export class BlogsResolver {
 
     return await blog.remove();
   }
+  @Authorized()
+  @Query(() => Blog, { nullable: true })
+  async blog(@Arg("id", () => ID) id: number): Promise<Blog | null> {
+    const blog = await datasource
+      .getRepository(Blog)
+      .findOne({ where: { id }});
+
+    if (blog === null) {
+      throw new Error('Il n\'y a pas de blog pour cette recherche')
+    }
+    return blog
+  }
   
   @Authorized()
   @Query(() => [Blog])
