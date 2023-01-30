@@ -19,18 +19,18 @@ export class BlogsResolver {
       return await datasource.getRepository(Blog).save(blog)
     }
   }
-
+  @Authorized()
    @Mutation(() => Blog, { nullable: true })
-  async deleteBlog(@Arg("id", () => ID) id: number): Promise<Blog | null> {
+    async deleteBlog(@Arg("id", () => ID) id: number): Promise<Blog | void> {
     const blog = await datasource
       .getRepository(Blog)
       .findOne({ where: { id } });
-
+    
     if (blog === null) {
-      return null;
+      throw new Error('Il n\'y a pas de blog pour cette recherche')
     }
 
-    return await datasource.getRepository(Blog).remove(blog);
+    return await blog.remove();
   }
   
   @Authorized()
