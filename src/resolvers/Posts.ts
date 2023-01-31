@@ -1,6 +1,6 @@
 import { Resolver, Mutation, Arg, Query, ID, Authorized } from "type-graphql";
 import datasource from "../utils";
-import { Post, PostInput } from "../entities/Post";
+import { Post, UpdatePostInput,PostInput } from "../entities/Post";
 import { Blog } from "../entities/Blog";
 
 @Resolver()
@@ -31,6 +31,23 @@ export class PostsResolver {
     }
 
     return await post.remove();
+  }
+
+  @Authorized()
+  @Mutation(() => Post, { nullable: true })
+  async updatePost(
+    @Arg("id", () => ID) id: number,
+    @Arg("data", () => UpdatePostInput) data: UpdatePostInput,
+  ): Promise<Post | null> {
+    const post = await datasource
+      .getRepository(Post)
+      .findOne({ where: { id } });
+
+    if (post === null) {
+      throw new Error('Il n\'y a pas de d\'article pour cette recherche')
+    }
+
+    return await datasource.getRepository(Post).save({...post,...data,updated_at : new Date()});
   }
 
   @Query(() => [Post])
