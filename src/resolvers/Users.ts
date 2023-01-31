@@ -19,10 +19,18 @@ export class UsersResolver {
     return await datasource.getRepository(User).save(data);
   }
 
+  @Mutation(() => User)
+  async createAdmin(
+    @Arg("data", () => UserInput) data: UserInput
+  ): Promise<User> {
+    data.password = await hash(data.password);
+    return await datasource.getRepository(User).save({ ...data, role: "ADMIN" })
+  }
+
   @Mutation(() => String, { nullable: true })
   async login(
     @Arg("data", () => UserInput) data: UserInput
-    ): Promise<string | null> {
+  ): Promise<string | null> {
     try {
       // because argon doesnt just hash, we can't get the user with its password
       // 1st step : search user by email
@@ -36,6 +44,7 @@ export class UsersResolver {
       // 2nd step : compare the user hashed password with the clear password
       if (await verify(user.password, data.password)) {
 
+        // console.log('admin', user)
         // Jwt generation
         const token = sign({ userId: user.id }, process.env.JWT_SECRET_KEY)
         return token
@@ -46,7 +55,6 @@ export class UsersResolver {
     } catch {
       return null
     }
-    
   }
 
   @Authorized()
@@ -55,12 +63,12 @@ export class UsersResolver {
     return context.user
   }
 
-  @Authorized()
+  @Authorized("ADMIN")
   @Query(() => [User])
   async users(): Promise<User[]> {
     return await datasource.getRepository(User).find({});
   }
-  
+
 }
 
 
