@@ -1,5 +1,4 @@
-import { Resolver, Mutation, Arg, Query, ID, Authorized} from "type-graphql";
-import { User } from "../entities/User";
+import { Resolver, Mutation, Arg, Query, ID, Authorized } from "type-graphql";
 import datasource from "../utils";
 import { Post, PostInput } from "../entities/Post";
 import { Blog } from "../entities/Blog";
@@ -13,20 +12,20 @@ export class PostsResolver {
     @Arg("data", () => PostInput) data: PostInput,
     @Arg("blogId", () => ID) id: number
   ): Promise<Post> {
-      const blog = await datasource.getRepository(Blog).findOne({ where: { id } });
-      if (blog) {
-        const post = { ...data, blog}
-        return await datasource.getRepository(Post).save(post)
-      }
+    const blog = await datasource.getRepository(Blog).findOne({ where: { id } });
+    if (blog) {
+      const post = { ...data, blog }
+      return await datasource.getRepository(Post).save(post)
+    }
   }
 
   @Authorized()
-   @Mutation(() => Post, { nullable: true })
-    async deletePost(@Arg("id", () => ID) id: number): Promise<Post | void> {
+  @Mutation(() => Post, { nullable: true })
+  async deletePost(@Arg("id", () => ID) id: number): Promise<Post> {
     const post = await datasource
       .getRepository(Post)
       .findOne({ where: { id } });
-    
+
     if (post === null) {
       throw new Error('Il n\'y a pas de d\'article pour cette recherche')
     }
@@ -77,10 +76,9 @@ export class PostsResolver {
     return await datasource.getRepository(Post).find({});
   }
 
-  
   @Query(() => Post, { nullable: true })
   async getpost(@Arg("postId", () => ID) id: number): Promise<Post | null> {
-    const post = await datasource.getRepository(Post).findOne({ where: { id }})
+    const post = await datasource.getRepository(Post).findOne({ where: { id } })
 
     if (post === null) {
       throw new Error('Il n\'y a pas d\'article pour cette recherche')
