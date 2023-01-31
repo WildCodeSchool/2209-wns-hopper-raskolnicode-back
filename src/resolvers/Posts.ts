@@ -1,6 +1,6 @@
 import { Resolver, Mutation, Arg, Query, ID, Authorized } from "type-graphql";
 import datasource from "../utils";
-import { Post, PostInput } from "../entities/Post";
+import { Post, UpdatePostInput,PostInput } from "../entities/Post";
 import { Blog } from "../entities/Blog";
 
 @Resolver()
@@ -37,38 +37,17 @@ export class PostsResolver {
   @Mutation(() => Post, { nullable: true })
   async updatePost(
     @Arg("id", () => ID) id: number,
-    @Arg("title", { nullable: true }) title: string | null,
-    @Arg("content", { nullable: true }) content: string | null,
-    @Arg("image", { nullable: true }) image: string | null,
-    @Arg("summary", { nullable: true }) summary: string | null,
-    @Arg("isArchived", { nullable: true }) isArchived: boolean | null
+    @Arg("data", () => UpdatePostInput) data: UpdatePostInput,
   ): Promise<Post | null> {
     const post = await datasource
       .getRepository(Post)
       .findOne({ where: { id } });
 
     if (post === null) {
-      throw new Error('Il n\'y a pas de blog pour cette recherche')
+      throw new Error('Il n\'y a pas de d\'article pour cette recherche')
     }
 
-    if (title != null) {
-      post.title = title;
-    }
-
-    if (content !== null) {
-      post.content = content;
-    }
-    if (image !== null) {
-      post.image = image;
-    }
-    if (summary !== null) {
-      post.summary = summary;
-    }
-    if (isArchived !== null) {
-      post.isArchived = isArchived;
-    }
-
-    return await datasource.getRepository(Post).save(post);
+    return await datasource.getRepository(Post).save({...post,...data,updated_at : new Date()});
   }
 
   @Query(() => [Post])

@@ -76,3 +76,26 @@ export class PostInput {
   @IsBoolean()
   isArchived: boolean;
 }
+
+@InputType()
+export class UpdatePostInput {
+
+  @Field({ nullable: true })
+  @Length(1, 20)
+  title: string;
+
+  @Field({ nullable: true })
+  @Length(1, 20)
+  content: string;
+
+  @Field({ nullable: true })
+  @Length(1, 160)
+  summary: string;
+
+  @Field({ nullable: true })
+  image: string;
+
+  @Field({ nullable: true })
+  @IsBoolean()
+  isArchived: boolean;
+}
