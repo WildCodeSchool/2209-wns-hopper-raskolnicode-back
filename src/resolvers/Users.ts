@@ -27,6 +27,14 @@ export class UsersResolver {
     return await datasource.getRepository(User).save({ ...data, role: "ADMIN" })
   }
 
+  @Mutation(() => User)
+  async createSuperAdmin(
+    @Arg("data", () => UserInput) data: UserInput
+  ): Promise<User> {
+    data.password = await hash(data.password);
+    return await datasource.getRepository(User).save({ ...data, role: "SUPERADMIN" })
+  }
+
   @Mutation(() => String, { nullable: true })
   async login(
     @Arg("data", () => UserInput) data: UserInput
@@ -65,10 +73,13 @@ export class UsersResolver {
 
   @Authorized("ADMIN")
   @Query(() => [User])
-  async users(): Promise<User[]> {
+  async getUsers(): Promise<User[]> {
     return await datasource.getRepository(User).find({});
   }
 
+  @Query(() => User)
+  async hasSuperAdmin(): Promise<User> {
+    return await datasource.getRepository(User).findOne({ where: { role: "SUPERADMIN" } });
+  }
+
 }
-
-
