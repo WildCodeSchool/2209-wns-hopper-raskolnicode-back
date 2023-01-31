@@ -5,8 +5,9 @@ import { User } from "./entities/User";
 import { IContext } from './resolvers/Users';
 
 // Available Roles :
-// - USER
+// - SUPERADMIN
 // - ADMIN
+// - USER
 
 export const customAuthChecker: AuthChecker<IContext> = async (
   { root, args, context, info }, roles,
