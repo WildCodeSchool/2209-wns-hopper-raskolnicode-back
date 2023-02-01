@@ -23,6 +23,22 @@ export class CommentsResolver {
     }
   }
 
+  @Authorized()
+  @Mutation(() => Comment, { nullable: true })
+  async updateComment(
+    @Arg("id", () => ID) id: number,
+    @Arg("data", () => CommentInput) data: CommentInput,
+  ): Promise<Comment | null> {
+    const comment = await datasource
+      .getRepository(Comment)
+      .findOne({ where: { id } });
+
+    if (comment === null) {
+      throw new Error('Ce commentaire n\'existe pas')
+    }
+    return await datasource.getRepository(Comment).save({...comment,...data});
+  }
+
   @Query(() => [Comment], { nullable: true })
   async getComments(): Promise<Comment[]> {
     const Comments = await datasource.getRepository(Comment).find({
