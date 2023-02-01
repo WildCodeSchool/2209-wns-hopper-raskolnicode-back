@@ -76,7 +76,7 @@ export class BlogsResolver {
   async getBlog(@Arg("id", () => ID) id: number): Promise<Blog | null> {
     const blog = await datasource
       .getRepository(Blog)
-      .findOne({ where: { id }});
+      .findOne({ where: { id },relations : { user: true , posts: true}});
 
     if (blog === null) {
       throw new Error('Il n\'y a pas de blog pour cette recherche')
