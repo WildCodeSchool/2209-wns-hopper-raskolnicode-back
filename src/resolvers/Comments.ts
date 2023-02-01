@@ -47,4 +47,13 @@ export class CommentsResolver {
     return Comments;
   }
 
+  @Query(() => [Comment], { nullable: true })
+  async getCommentsByPost(
+    @Arg("postId", () => ID) id: number,
+  ): Promise<Comment[]> {
+    const post : Post = await datasource.getRepository(Post).findOne({ where : { id } });
+    if(post){
+     return await datasource.getRepository(Comment).find({relations: { user: true , post:true} , where : { post : { id : post.id } } });
+    }
+  }
 }
