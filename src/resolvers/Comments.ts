@@ -25,18 +25,32 @@ export class CommentsResolver {
 
   @Authorized()
   @Mutation(() => Comment, { nullable: true })
-  async deleteComment(
-    @Arg("id", () => ID) id: number): Promise<Comment> {
+  async updateComment(
+    @Arg("id", () => ID) id: number,
+    @Arg("data", () => CommentInput) data: CommentInput,
+  ): Promise<Comment | null> {
     const comment = await datasource
       .getRepository(Comment)
       .findOne({ where: { id } });
-
     if (comment === null) {
-      throw new Error('Il n\'y a pas de d\'article pour cette recherche')
+      throw new Error('Ce commentaire n\'existe pas')
     }
+    return await datasource.getRepository(Comment).save({...comment,...data});
+  }
+
+  @Authorized()
+  @Mutation(() => Comment, { nullable: true })
+  async deleteComment(
+    @Arg("id", () => ID) id: number): Promise<Comment> {
+      const comment = await datasource
+      .getRepository(Comment)
+      .findOne({ where: { id } });
+      if (comment === null) {
+        throw new Error('Ce commentaire n\'existe pas')
+      }
 
     return await comment.remove();
-  }
+    }
 
   @Query(() => [Comment], { nullable: true })
   async getComments(): Promise<Comment[]> {
@@ -46,4 +60,13 @@ export class CommentsResolver {
     return Comments;
   }
 
+  @Query(() => [Comment], { nullable: true })
+  async getCommentsByPost(
+    @Arg("postId", () => ID) id: number,
+  ): Promise<Comment[]> {
+    const post : Post = await datasource.getRepository(Post).findOne({ where : { id } });
+    if(post){
+     return await datasource.getRepository(Comment).find({relations: { user: true , post:true} , where : { post : { id : post.id } } });
+    }
+  }
 }
