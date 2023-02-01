@@ -32,12 +32,25 @@ export class CommentsResolver {
     const comment = await datasource
       .getRepository(Comment)
       .findOne({ where: { id } });
-
     if (comment === null) {
       throw new Error('Ce commentaire n\'existe pas')
     }
     return await datasource.getRepository(Comment).save({...comment,...data});
   }
+
+  @Authorized()
+  @Mutation(() => Comment, { nullable: true })
+  async deleteComment(
+    @Arg("id", () => ID) id: number): Promise<Comment> {
+      const comment = await datasource
+      .getRepository(Comment)
+      .findOne({ where: { id } });
+      if (comment === null) {
+        throw new Error('Ce commentaire n\'existe pas')
+      }
+
+    return await comment.remove();
+    }
 
   @Query(() => [Comment], { nullable: true })
   async getComments(): Promise<Comment[]> {
