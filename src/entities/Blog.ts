@@ -36,7 +36,7 @@ export class Blog extends BaseEntity {
   user: User
 
   @OneToMany(() => Post, (post) => post.blog,  { onDelete: 'CASCADE' })
-  @Field(() => [Post])
+  @Field(() => [Post],{ nullable: false })
   posts: Post[]
 }
 
