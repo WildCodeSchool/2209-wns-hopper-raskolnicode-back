@@ -10,6 +10,7 @@ const today = new Date()
 @ObjectType()
 export class Blog extends BaseEntity {
   @PrimaryGeneratedColumn()
+  @Field(() => ID)
   id: number;
 
   @Column()

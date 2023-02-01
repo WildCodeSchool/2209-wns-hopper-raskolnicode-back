@@ -41,11 +41,11 @@ export class Post extends BaseEntity {
   @Field(() => Date)
   updated_at: Date;
 
-  @OneToMany(() => Comment, (comment) => comment.post, { nullable: true })
+  @OneToMany(() => Comment, (comment) => comment.post, { nullable: true , onDelete: 'CASCADE' })
   @Field(() => [Comment], { nullable: true })
   comments: Comment[];
 
-  @ManyToOne(() => Blog, (blog) => blog.posts, { nullable: false })
+  @ManyToOne(() => Blog, (blog) => blog.posts, { nullable: false , onDelete: 'CASCADE' })
   @Field(() => Blog, { nullable: false })
   blog: Blog;
 
