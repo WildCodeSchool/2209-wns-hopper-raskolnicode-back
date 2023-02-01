@@ -33,6 +33,8 @@ export class BlogsResolver {
     }
     if(user.id == blog.user.id){
       return await blog.remove()
+    }else{
+      throw new Error('Vous n\'êtes pas l\'auteur de ce blog')
     }
   }
 
@@ -65,6 +67,8 @@ export class BlogsResolver {
 
     if(user.id == blog.user.id){
       return await datasource.getRepository(Blog).save(blog);
+    }else{
+      throw new Error('Vous n\'êtes pas l\'auteur de ce blog')
     }
   }
 
