@@ -37,7 +37,7 @@ export class CommentsResolver {
   ): Promise<Comment[]> {
     const post : Post = await datasource.getRepository(Post).findOne({ where : { id } });
     if(post){
-     return await datasource.getRepository(Comment).find({relations: { user: true , post:true} , where : { post : { id } } });
+     return await datasource.getRepository(Comment).find({relations: { user: true , post:true} , where : { post : { id : post.id } } });
     }
   }
 }
