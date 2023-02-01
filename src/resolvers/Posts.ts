@@ -52,13 +52,12 @@ export class PostsResolver {
 
   @Query(() => [Post])
   async getPosts(): Promise<Post[]> {
-    return await datasource.getRepository(Post).find({});
+    return await datasource.getRepository(Post).find({ relations : { comments: true, blog:true } });
   }
 
   @Query(() => Post, { nullable: true })
   async getpost(@Arg("postId", () => ID) id: number): Promise<Post | null> {
-    const post = await datasource.getRepository(Post).findOne({ where: { id } })
-
+    const post = await datasource.getRepository(Post).findOne({ where: { id }, relations : { comments: true, blog:true } })
     if (post === null) {
       throw new Error('Il n\'y a pas d\'article pour cette recherche')
     }

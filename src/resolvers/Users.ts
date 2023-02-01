@@ -74,7 +74,7 @@ export class UsersResolver {
   @Authorized("ADMIN")
   @Query(() => [User])
   async getUsers(): Promise<User[]> {
-    return await datasource.getRepository(User).find({});
+    return await datasource.getRepository(User).find({ relations : { comments: true, blog:true } });
   }
 
   @Query(() => User)

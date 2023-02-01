@@ -1,4 +1,4 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, BaseEntity } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, BaseEntity, OneToMany } from "typeorm";
 import { ObjectType, Field, ID, InputType } from "type-graphql";
 import { IsBoolean, Length } from "class-validator";
 import { Comment } from "./Comment";
@@ -41,7 +41,7 @@ export class Post extends BaseEntity {
   @Field(() => Date)
   updated_at: Date;
 
-  @ManyToOne(() => Comment, (comment) => comment.user, { nullable: true })
+  @OneToMany(() => Comment, (comment) => comment.post, { nullable: true })
   @Field(() => [Comment], { nullable: true })
   comments: Comment[];
 
