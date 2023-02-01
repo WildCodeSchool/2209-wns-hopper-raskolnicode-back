@@ -1,22 +1,32 @@
-import { Resolver, Mutation, Arg, Query, Authorized } from "type-graphql";
+import { Resolver, Mutation, Arg, Query, Authorized,Ctx,ID } from "type-graphql";
 import datasource from "../utils";
 import { Comment, CommentInput } from "../entities/Comment";
+import { IContext } from "./Users";
+import { User } from "../entities/User"
+import { Post } from "../entities/Post";
 
 @Resolver()
 export class CommentsResolver {
-  
+
   @Authorized()
   @Mutation(() => Comment)
   async createComment(
-    @Arg("data", () => CommentInput) data: CommentInput
+    @Arg("data", () => CommentInput) data: CommentInput,
+    @Arg("postId", () => ID) id: number,
+    @Ctx() context: IContext
   ): Promise<Comment> {
-    return await datasource.getRepository(Comment).save(data);
+    const user : User = context.user
+    const post : Post = await datasource.getRepository(Post).findOne({ where: { id }, relations : { comments: true } })
+    if (user) {
+      const comment = { ...data,user,post}
+      return await datasource.getRepository(Comment).save(comment)
+    }
   }
 
   @Query(() => [Comment], { nullable: true })
   async getComments(): Promise<Comment[]> {
     const Comments = await datasource.getRepository(Comment).find({
-      // relations: { user: true },
+      relations: { user: true , post:true},
     });
     return Comments;
   }
