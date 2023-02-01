@@ -20,16 +20,20 @@ export class BlogsResolver {
 
   @Authorized()
    @Mutation(() => Blog, { nullable: true })
-    async deleteBlog(@Arg("id", () => ID) id: number): Promise<Blog> {
+    async deleteBlog(
+    @Arg("id", () => ID) id: number,
+    @Ctx() context: IContext)
+    : Promise<Blog> {
+    const user  = context.user
     const blog = await datasource
-      .getRepository(Blog)
-      .findOne({ where: { id } });
-    
+    .getRepository(Blog)
+    .findOne({ where: { id }, relations : { user : true} });
     if (blog === null) {
       throw new Error('Il n\'y a pas de blog pour cette recherche')
     }
-
-    return await blog.remove();
+    if(user.id == blog.user.id){
+      return await blog.remove()
+    }
   }
 
   @Authorized()
@@ -37,11 +41,13 @@ export class BlogsResolver {
   async updateBlog(
     @Arg("id", () => ID) id: number,
     @Arg("name", { nullable: true }) name: string | null,
-    @Arg("description", { nullable: true }) description: string | null
+    @Arg("description", { nullable: true }) description: string | null,
+    @Ctx() context: IContext
   ): Promise<Blog | null> {
+    const user  = context.user
     const blog = await datasource
       .getRepository(Blog)
-      .findOne({ where: { id } });
+      .findOne({ where: { id } , relations : { user : true} });
 
     blog.created_at = new Date()
 
@@ -57,7 +63,9 @@ export class BlogsResolver {
       blog.description = description;
     }
 
-    return await datasource.getRepository(Blog).save(blog);
+    if(user.id == blog.user.id){
+      return await datasource.getRepository(Blog).save(blog);
+    }
   }
 
   @Query(() => Blog, { nullable: true })

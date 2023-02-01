@@ -9,6 +9,7 @@ const today = new Date()
 @ObjectType()
 export class Comment extends BaseEntity {
   @PrimaryGeneratedColumn()
+  @Field(() => ID)
   id: number;
 
   @Column()
