@@ -23,6 +23,21 @@ export class CommentsResolver {
     }
   }
 
+  @Authorized()
+  @Mutation(() => Comment, { nullable: true })
+  async deleteComment(
+    @Arg("id", () => ID) id: number): Promise<Comment> {
+    const comment = await datasource
+      .getRepository(Comment)
+      .findOne({ where: { id } });
+
+    if (comment === null) {
+      throw new Error('Il n\'y a pas de d\'article pour cette recherche')
+    }
+
+    return await comment.remove();
+  }
+
   @Query(() => [Comment], { nullable: true })
   async getComments(): Promise<Comment[]> {
     const Comments = await datasource.getRepository(Comment).find({
