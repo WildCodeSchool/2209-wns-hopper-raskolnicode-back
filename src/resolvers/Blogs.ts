@@ -61,7 +61,7 @@ export class BlogsResolver {
   }
 
   @Query(() => Blog, { nullable: true })
-  async blog(@Arg("id", () => ID) id: number): Promise<Blog | null> {
+  async getBlog(@Arg("id", () => ID) id: number): Promise<Blog | null> {
     const blog = await datasource
       .getRepository(Blog)
       .findOne({ where: { id }});
@@ -73,7 +73,7 @@ export class BlogsResolver {
   }
   
   @Query(() => [Blog])
-  async blogs(): Promise<Blog[]> {
+  async getBlogs(): Promise<Blog[]> {
     return await datasource.getRepository(Blog).find({ relations : { user: true , posts: true} });
   }
 }
