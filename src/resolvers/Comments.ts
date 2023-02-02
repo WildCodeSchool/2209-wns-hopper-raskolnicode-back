@@ -28,28 +28,41 @@ export class CommentsResolver {
   async updateComment(
     @Arg("id", () => ID) id: number,
     @Arg("data", () => CommentInput) data: CommentInput,
+    @Ctx() context: IContext
   ): Promise<Comment | null> {
+    const user  = context.user
     const comment = await datasource
       .getRepository(Comment)
-      .findOne({ where: { id } });
+      .findOne({ where: { id }, relations: { user: true } });
     if (comment === null) {
       throw new Error('Ce commentaire n\'existe pas')
     }
-    return await datasource.getRepository(Comment).save({...comment,...data});
+    if(user.id == comment.user.id){
+      return await datasource.getRepository(Comment).save({...comment,...data});
+    }else{
+      throw new Error('Vous n\'êtes pas l\'auteur de ce commentaire')
+    }
   }
 
   @Authorized()
   @Mutation(() => Comment, { nullable: true })
   async deleteComment(
-    @Arg("id", () => ID) id: number): Promise<Comment> {
+    @Arg("id", () => ID) id: number,
+    @Ctx() context: IContext)
+    : Promise<Comment> {
+      const user  = context.user
       const comment = await datasource
       .getRepository(Comment)
-      .findOne({ where: { id } });
+      .findOne({ where: { id } ,relations: { user: true }});
       if (comment === null) {
         throw new Error('Ce commentaire n\'existe pas')
       }
-
-    return await comment.remove();
+      if(user.id == comment.user.id){
+        return await comment.remove();
+      }else{
+        throw new Error('Vous n\'êtes pas l\'auteur de ce commentaire')
+      }
+    
     }
 
   @Query(() => [Comment], { nullable: true })
