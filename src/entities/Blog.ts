@@ -51,7 +51,8 @@ export class BlogInput {
   @Length(1, 500)
   description: string;
 
-  // try userId with authorization decorator for role admin
+  @Field({ nullable: true })
+  userId: number
 }
 
 

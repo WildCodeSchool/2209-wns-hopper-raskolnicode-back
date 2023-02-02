@@ -16,6 +16,18 @@ export class UsersResolver {
     @Arg("data", () => UserInput) data: UserInput
   ): Promise<User> {
     data.password = await hash(data.password);
+    console.log('data', data)
+    return await datasource.getRepository(User).save(data);
+  }
+
+  @Mutation(() => User)
+  async createUserByRole(
+    @Arg("data", () => UserInput) data: UserInput,
+  ): Promise<User> {
+    data.password = await hash(data.password);
+    if (data.role === "") {
+      delete data.role
+    }
     return await datasource.getRepository(User).save(data);
   }
 
@@ -71,7 +83,7 @@ export class UsersResolver {
     return context.user
   }
 
-  @Authorized("ADMIN")
+  @Authorized("ADMIN", "SUPERADMIN")
   @Query(() => [User])
   async getUsers(): Promise<User[]> {
     return await datasource.getRepository(User).find({ relations : { comments: true, blog:true } });

@@ -41,4 +41,7 @@ export class UserInput {
   @Field()
   @Length(8, 60)
   password: string;
+
+  @Field({ nullable: true })
+  role?: string;
 }
