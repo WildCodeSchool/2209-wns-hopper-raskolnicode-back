@@ -2,6 +2,7 @@ import { Resolver, Mutation, Arg, Query, Authorized, ID, Ctx } from "type-graphq
 import datasource from "../utils";
 import { Blog, BlogInput } from "../entities/Blog";
 import { IContext } from "./Users";
+import { User } from "../entities/User";
 
 @Resolver()
 export class BlogsResolver {
@@ -12,6 +13,17 @@ export class BlogsResolver {
     @Ctx() context: IContext
   ): Promise<Blog> {
     const user = context.user
+    if (user) {
+      const blog = { ...data, user }
+      return await datasource.getRepository(Blog).save(blog)
+    }
+  }
+
+  @Mutation(() => Blog)
+  async createBlogByUser(
+    @Arg("data", () => BlogInput) data: BlogInput
+  ): Promise<Blog> {
+    const user = await datasource.getRepository(User).findOne({ where: { id: data.userId}})
     if (user) {
       const blog = { ...data, user }
       return await datasource.getRepository(Blog).save(blog)
