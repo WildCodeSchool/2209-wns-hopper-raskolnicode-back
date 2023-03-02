@@ -29,6 +29,7 @@ beforeAll(async () => {
     resolvers: [UsersResolver, PostsResolver, BlogsResolver, CommentsResolver],
     authChecker: customAuthChecker
   });
+
 })
 
 describe('users', () => { 
@@ -90,7 +91,7 @@ describe('users', () => {
       }}
     });
 
-    // console.log('token test', result)
+    console.log('token response', result.data.login)
 
     expect(result.data?.login).toBeTruthy();
     expect(typeof result.data?.login).toBe("string");

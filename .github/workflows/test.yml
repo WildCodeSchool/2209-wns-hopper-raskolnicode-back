@@ -1,0 +1,14 @@
+name: test-back
+
+on: pull_request
+
+jobs:
+  test-back:
+    runs-on: ubuntu-latest # contains Docker + Docker compose
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v2
+      # - name: Create .env file # to add variables before running the test
+      #   run: echo "" > .env
+      - name: Run test
+        run: npm run test:ci #env variables can be defined here
