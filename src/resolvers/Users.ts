@@ -101,7 +101,7 @@ export class UsersResolver {
     return context.user;
   }
 
-  // @Authorized("ADMIN", "SUPERADMIN")
+  // @Authorized("SUPERADMIN")
   @Query(() => [User])
   async getUsers(): Promise<User[]> {
     return await datasource
