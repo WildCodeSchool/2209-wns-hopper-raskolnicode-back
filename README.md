@@ -15,7 +15,7 @@ docker compose up --build
 ```
 
 To launch docker tests :
-docker compose docker-compose.test.yml up --build
+docker-compose -f docker-compose.test.yml up
 
 To work locally, you should install the NPM dependencies by running:
 
