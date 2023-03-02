@@ -9,7 +9,7 @@ services:
     volumes:
       - ./src:/app/src
       - ./tests:/app/tests
-    command: yarn test ./tests --watch
+    command: yarn test ./tests ${JEST_OPTIONS}
     env_file:
       - ./.env
     environment:
