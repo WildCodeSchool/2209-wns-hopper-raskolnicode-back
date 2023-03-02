@@ -4,6 +4,6 @@
     "module": "commonjs",
     "lib": ["es2018", "esnext.asynciterable"],
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true, // asks ts to add infos 
   }
 }
