@@ -1,9 +1,9 @@
+import "reflect-metadata";
 import { Post } from "./entities/Post";
 import { User } from "./entities/User";
 import { Blog } from "./entities/Blog";
 import { Comment } from "./entities/Comment";
 import { DataSource } from "typeorm";
-
 
 const datasource = new DataSource({
   type: "postgres",
