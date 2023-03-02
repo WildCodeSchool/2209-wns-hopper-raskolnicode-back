@@ -3,7 +3,7 @@ name: docker-back
 on:
   push:
     branches:
-      - "dev"
+      - "main"
 
 jobs:
   docker-back:
