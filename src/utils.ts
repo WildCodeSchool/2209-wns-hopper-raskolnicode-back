@@ -5,6 +5,9 @@ import { Blog } from "./entities/Blog";
 import { Comment } from "./entities/Comment";
 import { DataSource } from "typeorm";
 
+
+console.log('POSTGRES HOST', process.env.POSTGRES_HOST)
+
 const datasource = new DataSource({
   type: "postgres",
   host: process.env.POSTGRES_HOST,
