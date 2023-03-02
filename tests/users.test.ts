@@ -7,8 +7,9 @@ import { CommentsResolver } from '../src/resolvers/Comments';
 import { customAuthChecker } from '../src/auth';
 import { GraphQLSchema, graphql, print } from 'graphql';
 import datasource from '../src/utils';
-import { createUser } from './gaphql/createUser';
 import { User } from '../src/entities/User';
+import { createUser, login } from './gaphql/mutations';
+import { loggedUser } from './gaphql/queries';
 
 let schema: GraphQLSchema
 // code to execute before all tests (beforeEAch is available as well)
@@ -31,6 +32,7 @@ beforeAll(async () => {
 })
 
 describe('users', () => { 
+  let token: string;
 
   describe('user signup', () => {
     it('creates a new user', async () => {
@@ -77,4 +79,36 @@ describe('users', () => {
     })
   })
 
+  it('returns a token on a valid mutation', async () => {
+    const result = await graphql({
+      schema,
+      source: print(login),
+      variableValues: {
+      data : {
+        email: "test@mail.com",
+        password: "test1234",
+      }}
+    });
+
+    // console.log('token test', result)
+
+    expect(result.data?.login).toBeTruthy();
+    expect(typeof result.data?.login).toBe("string");
+    token = result.data?.login;
+  });
+
+  it("returns current logged user", async () => {
+    const result = await graphql({
+      schema,
+      source: print(loggedUser),
+      contextValue: {
+        token
+      },
+    });
+
+    // console.log('logged user test', result.data.loggedUser)
+
+    expect(result.data?.loggedUser).toBeTruthy();
+    expect(result.data?.loggedUser.email).toBe("test@mail.com")
+  })
  })

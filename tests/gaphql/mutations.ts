@@ -5,3 +5,7 @@ export const createUser = gql`mutation createUser($data: UserInput!){
     id
   }
 }`
+
+export const login = gql`mutation Login($data: UserInput!){
+  login(data: $data)
+}`
