@@ -5,8 +5,8 @@ import { hash, verify } from "argon2";
 import { sign } from "jsonwebtoken";
 
 export interface IContext {
-  token: string | null,
-  user?: User
+  token: string | null;
+  user?: User;
 }
 
 @Resolver()
@@ -16,17 +16,33 @@ export class UsersResolver {
     @Arg("data", () => UserInput) data: UserInput
   ): Promise<User> {
     data.password = await hash(data.password);
-    console.log('data', data)
+    console.log("data", data);
     return await datasource.getRepository(User).save(data);
+  }
+
+  @Authorized()
+  @Mutation(() => User, { nullable: true })
+  async updateUser(
+    @Arg("pseudo") pseudo: string,
+    @Ctx() context: IContext
+  ): Promise<User> {
+    const user = await datasource
+      .getRepository(User)
+      .findOne({ where: { id: context.user.id } });
+    if (pseudo != null) {
+      user.pseudo = pseudo;
+    }
+
+    return await datasource.getRepository(User).save({ ...user, pseudo });
   }
 
   @Mutation(() => User)
   async createUserByRole(
-    @Arg("data", () => UserInput) data: UserInput,
+    @Arg("data", () => UserInput) data: UserInput
   ): Promise<User> {
     data.password = await hash(data.password);
     if (data.role === "") {
-      delete data.role
+      delete data.role;
     }
     return await datasource.getRepository(User).save(data);
   }
@@ -36,7 +52,9 @@ export class UsersResolver {
     @Arg("data", () => UserInput) data: UserInput
   ): Promise<User> {
     data.password = await hash(data.password);
-    return await datasource.getRepository(User).save({ ...data, role: "ADMIN" })
+    return await datasource
+      .getRepository(User)
+      .save({ ...data, role: "ADMIN" });
   }
 
   @Mutation(() => User)
@@ -44,7 +62,9 @@ export class UsersResolver {
     @Arg("data", () => UserInput) data: UserInput
   ): Promise<User> {
     data.password = await hash(data.password);
-    return await datasource.getRepository(User).save({ ...data, role: "SUPERADMIN" })
+    return await datasource
+      .getRepository(User)
+      .save({ ...data, role: "SUPERADMIN" });
   }
 
   @Mutation(() => String, { nullable: true })
@@ -54,44 +74,45 @@ export class UsersResolver {
     try {
       // because argon doesnt just hash, we can't get the user with its password
       // 1st step : search user by email
-      const user = await datasource.getRepository(User)
-        .findOne({ where: { email: data.email } })
-
+      const user = await datasource
+        .getRepository(User)
+        .findOne({ where: { email: data.email } });
       if (!user) {
-        return null
+        return null;
       }
 
       // 2nd step : compare the user hashed password with the clear password
       if (await verify(user.password, data.password)) {
-
         // console.log('admin', user)
         // Jwt generation
-        const token = sign({ userId: user.id }, process.env.JWT_SECRET_KEY)
-        return token
-
+        const token = sign({ userId: user.id }, process.env.JWT_SECRET_KEY);
+        return token;
       } else {
-        return null
+        return null;
       }
     } catch {
-      return null
+      return null;
     }
   }
 
   @Authorized()
   @Query(() => User, { nullable: true })
   async loggedUser(@Ctx() context: IContext): Promise<User | null> {
-    return context.user
+    return context.user;
   }
 
-  @Authorized("ADMIN", "SUPERADMIN")
+  // @Authorized("ADMIN", "SUPERADMIN")
   @Query(() => [User])
   async getUsers(): Promise<User[]> {
-    return await datasource.getRepository(User).find({ relations : { comments: true, blog:true } });
+    return await datasource
+      .getRepository(User)
+      .find({ relations: { comments: true, blogs: true } });
   }
 
   @Query(() => User)
   async hasSuperAdmin(): Promise<User> {
-    return await datasource.getRepository(User).findOne({ where: { role: "SUPERADMIN" } });
+    return await datasource
+      .getRepository(User)
+      .findOne({ where: { role: "SUPERADMIN" } });
   }
-
 }

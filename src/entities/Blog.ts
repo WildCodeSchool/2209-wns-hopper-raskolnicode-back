@@ -1,10 +1,17 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, BaseEntity, OneToMany } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  BaseEntity,
+  OneToMany,
+} from "typeorm";
 import { ObjectType, Field, ID, InputType } from "type-graphql";
 import { Length, MaxLength } from "class-validator";
 import { User } from "./User";
 import { Post } from "./Post";
 
-const today = new Date()
+const today = new Date();
 
 @Entity()
 @ObjectType()
@@ -23,26 +30,25 @@ export class Blog extends BaseEntity {
   @MaxLength(250)
   description?: string;
 
-  @Column({default: today})
+  @Column({ default: today })
   @Field(() => Date)
   created_at: Date;
 
-  @Column({default: today})
+  @Column({ default: today })
   @Field(() => Date)
   updated_at: Date;
 
-  @ManyToOne(() => User, (user) => user.blog,  { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.blogs, { onDelete: "CASCADE" })
   @Field(() => User)
-  user: User
+  user: User;
 
-  @OneToMany(() => Post, (post) => post.blog,  { onDelete: 'CASCADE' })
-  @Field(() => [Post],{ nullable: false })
-  posts: Post[]
+  @OneToMany(() => Post, (post) => post.blog, { onDelete: "CASCADE" })
+  @Field(() => [Post], { nullable: false })
+  posts: Post[];
 }
 
 @InputType()
 export class BlogInput {
-
   @Field()
   @Length(1, 50)
   name: string;
@@ -52,7 +58,5 @@ export class BlogInput {
   description: string;
 
   @Field({ nullable: true })
-  userId: number
+  userId: number;
 }
-
-
