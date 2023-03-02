@@ -15,9 +15,9 @@ services:
   db:
     image: postgres
     environment:
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:=supersecret}
-      POSTGRES_USER: ${POSTGRES_USER:=starblog}
-      POSTGRES_DB: ${POSTGRES_DB:=starblog}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-supersecret}
+      POSTGRES_USER: ${POSTGRES_USER:-starblog}
+      POSTGRES_DB: ${POSTGRES_DB:-starblog}
     ports:
       - 5432:5432
 
