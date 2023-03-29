@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  api:
+    # image: api
+    build: ./
+    ports:
+      - 5000:5000
+    volumes:
+      - ./src:/app/src
+      - ./tests:/app/tests
+    command: yarn test ./tests ${JEST_OPTIONS}
+    environment:
+      POSTGRES_HOST: ${POSTGRES_HOST:-db}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-supersecret}
+      POSTGRES_USER: ${POSTGRES_USER:-starblog}
+      POSTGRES_DB: ${POSTGRES_DB:-starblog}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-supersecret}
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-supersecret}
+      POSTGRES_USER: ${POSTGRES_USER:-starblog}
+      POSTGRES_DB: ${POSTGRES_DB:-starblog}
+    ports:
+      - 5432:5432

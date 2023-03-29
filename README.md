@@ -11,7 +11,11 @@ Everything is dockerized, just install Docker on you host machine then run:
 
 ```
 docker compose up --build
+
 ```
+
+To launch docker tests :
+npm run test:docker
 
 To work locally, you should install the NPM dependencies by running:
 
