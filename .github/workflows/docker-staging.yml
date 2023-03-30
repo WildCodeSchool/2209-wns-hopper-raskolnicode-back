@@ -1,9 +1,9 @@
-name: docker-main
+name: docker-staging
 
 on:
   push:
     branches:
-      - "main"
+      - "staging"
 
 jobs:
   docker-back:
@@ -26,4 +26,4 @@ jobs:
         with:
           context: .
           push: true
-          tags: soufcode/2209-wns-hopper-raskolnicode-back:latest
+          tags: soufcode/2209-wns-hopper-raskolnicode-back:staging
