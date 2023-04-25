@@ -56,7 +56,7 @@ export class BlogsResolver {
     @Arg("id", () => ID) id: number,
     @Arg("name", { nullable: true }) name: string | null,
     @Arg("description", { nullable: true }) description: string | null,
-    @Arg("image_storage", { nullable: true }) imageStorage: string | null,
+    @Arg("image_path", { nullable: true }) imagePath: string | null,
     @Ctx() context: IContext
   ): Promise<Blog | null> {
     const user  = context.user
@@ -78,8 +78,8 @@ export class BlogsResolver {
       blog.description = description;
     }
 
-    if (imageStorage !== null) {
-      blog.image_storage = imageStorage;
+    if (imagePath !== null) {
+      blog.image_path = imagePath;
     }
 
     if(user.id === blog.user.id){

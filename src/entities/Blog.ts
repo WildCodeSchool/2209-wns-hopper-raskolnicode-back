@@ -33,7 +33,7 @@ export class Blog extends BaseEntity {
   @Column()
   @Field({ nullable: true })
   @MaxLength(250)
-  image_storage?: string;
+  image_path?: string;
   
   @Column({ default: today })
   @Field(() => Date)
@@ -64,7 +64,7 @@ export class BlogInput {
 
   @Field({ nullable: true })
   @MaxLength(250)
-  image_storage?: string;
+  image_path?: string;
 
   @Field({ nullable: true })
   userId: number;
