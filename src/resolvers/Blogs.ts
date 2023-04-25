@@ -56,6 +56,7 @@ export class BlogsResolver {
     @Arg("id", () => ID) id: number,
     @Arg("name", { nullable: true }) name: string | null,
     @Arg("description", { nullable: true }) description: string | null,
+    @Arg("image_path", { nullable: true }) imagePath: string | null,
     @Ctx() context: IContext
   ): Promise<Blog | null> {
     const user  = context.user
@@ -77,7 +78,11 @@ export class BlogsResolver {
       blog.description = description;
     }
 
-    if(user.id == blog.user.id){
+    if (imagePath !== null) {
+      blog.image_path = imagePath;
+    }
+
+    if(user.id === blog.user.id){
       return await datasource.getRepository(Blog).save(blog);
     }else{
       throw new Error('Vous n\'êtes pas l\'auteur de ce blog')

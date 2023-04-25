@@ -30,6 +30,11 @@ export class Blog extends BaseEntity {
   @MaxLength(250)
   description?: string;
 
+  @Column()
+  @Field({ nullable: true })
+  @MaxLength(250)
+  image_path?: string;
+  
   @Column({ default: today })
   @Field(() => Date)
   created_at: Date;
@@ -56,6 +61,10 @@ export class BlogInput {
   @Field()
   @Length(1, 500)
   description: string;
+
+  @Field({ nullable: true })
+  @MaxLength(250)
+  image_path?: string;
 
   @Field({ nullable: true })
   userId: number;
