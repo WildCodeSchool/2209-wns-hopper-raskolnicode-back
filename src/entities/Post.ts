@@ -66,15 +66,15 @@ export class Post extends BaseEntity {
 export class PostInput {
 
   @Field()
-  @Length(1, 20)
+  @Length(1, 400)
   title: string;
 
   @Field()
-  @Length(1, 20)
+  @Length(1, 20000)
   content: string;
 
   @Field()
-  @Length(1, 160)
+  @Length(1, 1500)
   summary: string;
 
   @Field()
@@ -90,15 +90,15 @@ export class PostInput {
 export class UpdatePostInput {
 
   @Field({ nullable: true })
-  @Length(1, 20)
+  @Length(1, 400)
   title: string;
 
   @Field({ nullable: true })
-  @Length(1, 20)
+  @Length(1, 20000)
   content: string;
 
   @Field({ nullable: true })
-  @Length(1, 160)
+  @Length(1, 1500)
   summary: string;
 
   @Field({ nullable: true })
