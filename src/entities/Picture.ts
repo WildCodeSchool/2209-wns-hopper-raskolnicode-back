@@ -35,11 +35,11 @@ export class Picture extends BaseEntity {
   @Field(() => Date)
   updated_at: Date;
 
-  @OneToOne(() => Post, (post) => post.picture, { nullable: false, onDelete: 'CASCADE' })
+  @OneToOne(() => Post, (post) => post.picture, { nullable: true, onDelete: 'CASCADE' })
   @Field(() => Post, { nullable: false })
   post: Post;
 
-  @OneToOne(() => Blog, (blog) => blog.picture, { nullable: false, onDelete: 'CASCADE' })
+  @OneToOne(() => Blog, (blog) => blog.picture, { nullable: true, onDelete: 'CASCADE' })
   @Field(() => Blog, { nullable: false })
   blog: Blog;
 }

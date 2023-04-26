@@ -50,7 +50,7 @@ export class Blog extends BaseEntity {
   user: User;
 
   @OneToMany(() => Post, (post) => post.blog, { onDelete: "CASCADE" })
-  @Field(() => [Post], { nullable: false })
+  @Field(() => [Post], { nullable: true })
   posts: Post[];
 
   @OneToOne(() => Picture, (picture) => picture.blog, { nullable: true })
