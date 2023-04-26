@@ -21,7 +21,7 @@ export class BlogsResolver {
 
   @Mutation(() => Blog)
   async createBlogByUser(
-    @Arg("data", () => BlogInput) data: BlogInput
+    @Arg("data", () => BlogInput) data: BlogInput,
   ): Promise<Blog> {
     const user = await datasource.getRepository(User).findOne({ where: { id: data.userId}})
     if (user) {
@@ -43,7 +43,7 @@ export class BlogsResolver {
     if (blog === null) {
       throw new Error('Il n\'y a pas de blog pour cette recherche')
     }
-    if(user.id == blog.user.id){
+    if(user.id === blog.user.id){
       return await blog.remove()
     }else{
       throw new Error('Vous n\'êtes pas l\'auteur de ce blog')
@@ -56,7 +56,7 @@ export class BlogsResolver {
     @Arg("id", () => ID) id: number,
     @Arg("name", { nullable: true }) name: string | null,
     @Arg("description", { nullable: true }) description: string | null,
-    @Arg("image_path", { nullable: true }) imagePath: string | null,
+    @Arg("image_link", { nullable: true }) imageLink: string | null,
     @Ctx() context: IContext
   ): Promise<Blog | null> {
     const user  = context.user
@@ -78,8 +78,8 @@ export class BlogsResolver {
       blog.description = description;
     }
 
-    if (imagePath !== null) {
-      blog.image_path = imagePath;
+    if (imageLink !== null) {
+      blog.image_id = imageLink;
     }
 
     if(user.id === blog.user.id){
@@ -93,7 +93,7 @@ export class BlogsResolver {
   async getBlog(@Arg("id", () => ID) id: number): Promise<Blog | null> {
     const blog = await datasource
       .getRepository(Blog)
-      .findOne({ where: { id },relations : { user: true , posts: true}});
+      .findOne({ where: { id },relations : { user: true , posts: true, picture: true}});
 
     if (blog === null) {
       throw new Error('Il n\'y a pas de blog pour cette recherche')
@@ -103,6 +103,6 @@ export class BlogsResolver {
   
   @Query(() => [Blog])
   async getBlogs(): Promise<Blog[]> {
-    return await datasource.getRepository(Blog).find({ relations : { user: true , posts: true} });
+    return await datasource.getRepository(Blog).find({ relations : { user: true , posts: true, picture: true} });
   }
 }

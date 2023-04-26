@@ -1,8 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, BaseEntity, OneToMany } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, BaseEntity, OneToMany, OneToOne } from "typeorm";
 import { ObjectType, Field, ID, InputType } from "type-graphql";
 import { IsBoolean, Length } from "class-validator";
 import { Comment } from "./Comment";
 import { Blog } from "./Blog";
+import { Picture } from "./Picture";
+
 
 const today = new Date()
 
@@ -27,7 +29,7 @@ export class Post extends BaseEntity {
 
   @Column()
   @Field()
-  image: string;
+  image_id?: string;
 
   @Column()
   @Field()
@@ -49,6 +51,9 @@ export class Post extends BaseEntity {
   @Field(() => Blog, { nullable: false })
   blog: Blog;
 
+  @OneToOne(() => Picture, (picture) => picture.post, { nullable: true })
+  @Field(() => Picture, { nullable: true })
+  picture: Picture;
 
 }
 
@@ -70,7 +75,7 @@ export class PostInput {
   summary: string;
 
   @Field()
-  image: string;
+  image_id?: string;
 
   @Field()
   @IsBoolean()
@@ -93,7 +98,7 @@ export class UpdatePostInput {
   summary: string;
 
   @Field({ nullable: true })
-  image: string;
+  image_id?: string;
 
   @Field({ nullable: true })
   @IsBoolean()

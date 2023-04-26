@@ -57,7 +57,7 @@ export class PostsResolver {
       throw new Error('Il n\'y a pas de d\'article pour cette recherche')
     }
     
-    if(user.id == post.blog.user.id){
+    if(user.id === post.blog.user.id){
       return await datasource.getRepository(Post).save({...post,...data,updated_at : new Date()});
     }else{
       throw new Error('Vous n\'êtes pas l\'auteur de cette article')
@@ -68,12 +68,12 @@ export class PostsResolver {
 
   @Query(() => [Post])
   async getPosts(): Promise<Post[]> {
-    return await datasource.getRepository(Post).find({ relations : { comments: true, blog:true } });
+    return await datasource.getRepository(Post).find({ relations : { comments: true, blog:true, picture: true } });
   }
 
   @Query(() => Post, { nullable: true })
   async getPost(@Arg("postId", () => ID) id: number): Promise<Post | null> {
-    const post = await datasource.getRepository(Post).findOne({ where: { id }, relations : { comments: true, blog:true } })
+    const post = await datasource.getRepository(Post).findOne({ where: { id }, relations : { comments: true, blog:true, picture: true } })
     if (post === null) {
       throw new Error('Il n\'y a pas d\'article pour cette recherche')
     }
