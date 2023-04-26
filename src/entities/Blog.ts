@@ -32,10 +32,6 @@ export class Blog extends BaseEntity {
   @MaxLength(250)
   description?: string;
 
-  @Column()
-  @Field({ nullable: true })
-  @MaxLength(250)
-  image_id?: string;
   
   @Column({ default: today })
   @Field(() => Date)
@@ -53,9 +49,11 @@ export class Blog extends BaseEntity {
   @Field(() => [Post], { nullable: true })
   posts: Post[];
 
+  
   @OneToOne(() => Picture, (picture) => picture.blog, { nullable: true })
   @Field(() => Picture, { nullable: true })
   picture: Picture;
+
 }
 
 @InputType()
@@ -68,9 +66,9 @@ export class BlogInput {
   @Length(1, 500)
   description: string;
 
-  @Field({ nullable: true })
-  @MaxLength(250)
-  image_id?: string;
+  // @Field({ nullable: true })
+  // @MaxLength(250)
+  // pictureId?: number;
 
   @Field({ nullable: true })
   userId: number;

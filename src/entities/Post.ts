@@ -27,9 +27,6 @@ export class Post extends BaseEntity {
   @Field()
   summary: string;
 
-  @Column()
-  @Field()
-  image_id?: string;
 
   @Column()
   @Field()
@@ -75,12 +72,13 @@ export class PostInput {
   summary: string;
 
   @Field()
-  image_id?: string;
+  pictureId?: number;
 
   @Field()
   @IsBoolean()
   isArchived: boolean;
 }
+
 
 @InputType()
 export class UpdatePostInput {
@@ -98,7 +96,7 @@ export class UpdatePostInput {
   summary: string;
 
   @Field({ nullable: true })
-  image_id?: string;
+  pictureId?: number;
 
   @Field({ nullable: true })
   @IsBoolean()

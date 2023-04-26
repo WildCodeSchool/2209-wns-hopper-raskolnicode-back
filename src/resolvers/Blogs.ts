@@ -56,7 +56,7 @@ export class BlogsResolver {
     @Arg("id", () => ID) id: number,
     @Arg("name", { nullable: true }) name: string | null,
     @Arg("description", { nullable: true }) description: string | null,
-    @Arg("image_link", { nullable: true }) imageLink: string | null,
+    @Arg("picture_link", { nullable: true }) pictureLink: string | null,
     @Ctx() context: IContext
   ): Promise<Blog | null> {
     const user  = context.user
@@ -78,8 +78,8 @@ export class BlogsResolver {
       blog.description = description;
     }
 
-    if (imageLink !== null) {
-      blog.image_id = imageLink;
+    if (pictureLink !== null) {
+      blog.picture.link = pictureLink;
     }
 
     if(user.id === blog.user.id){
@@ -103,6 +103,7 @@ export class BlogsResolver {
   
   @Query(() => [Blog])
   async getBlogs(): Promise<Blog[]> {
+    console.log("**************************IN WORK ***************")
     return await datasource.getRepository(Blog).find({ relations : { user: true , posts: true, picture: true} });
   }
 }
