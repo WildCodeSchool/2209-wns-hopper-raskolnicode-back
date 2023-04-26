@@ -50,7 +50,7 @@ export class Blog extends BaseEntity {
   posts: Post[];
 
   
-  @OneToOne(() => Picture, (picture) => picture.blog, { nullable: true })
+  @ManyToOne(() => Picture, { nullable: true })
   @Field(() => Picture, { nullable: true })
   picture: Picture;
 
@@ -66,9 +66,12 @@ export class BlogInput {
   @Length(1, 500)
   description: string;
 
-  // @Field({ nullable: true })
-  // @MaxLength(250)
-  // pictureId?: number;
+  @Field({ nullable: true })
+  picture_link?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(40)
+  picture_name?: string;
 
   @Field({ nullable: true })
   userId: number;

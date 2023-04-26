@@ -37,9 +37,9 @@ export class User {
   @Field(() => [Blog], { nullable: true })
   blogs: Blog[];
 
-  @OneToMany(() => Picture, (picture) => picture.user, { nullable: true })
-  @Field(() => [Picture], { nullable: true })
-  pictures: Picture[];
+  // @OneToMany(() => Picture, (picture) => picture.user, { nullable: true })
+  // @Field(() => [Picture], { nullable: true })
+  // pictures: Picture[];
 
 }
 

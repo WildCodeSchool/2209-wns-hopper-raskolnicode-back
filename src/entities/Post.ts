@@ -48,9 +48,15 @@ export class Post extends BaseEntity {
   @Field(() => Blog, { nullable: false })
   blog: Blog;
 
-  @OneToOne(() => Picture, (picture) => picture.post, { nullable: true })
+
+  @ManyToOne(() => Picture, { nullable: true, onDelete: 'CASCADE' })
   @Field(() => Picture, { nullable: true })
   picture: Picture;
+
+
+  // @ManyToOne(() => Picture, (picture) => picture.posts, { nullable: true })
+  // @Field(() => Picture, { nullable: true })
+  // picture: Picture;
 
 }
 

@@ -3,6 +3,7 @@ import datasource from "../utils";
 import { Blog, BlogInput } from "../entities/Blog";
 import { IContext } from "./Users";
 import { User } from "../entities/User";
+import { Picture } from "../entities/Picture";
 
 @Resolver()
 export class BlogsResolver {
@@ -14,7 +15,16 @@ export class BlogsResolver {
   ): Promise<Blog> {
     const user = context.user
     if (user) {
-      const blog = { ...data, user }
+
+      let picture 
+      if (data.picture_link) {
+        picture = new Picture();
+        picture.link = data.picture_link;
+        picture.name = data.picture_name;
+        await datasource.getRepository(Picture).save(picture);
+      }
+      
+      const blog = { ...data, user, picture }
       return await datasource.getRepository(Blog).save(blog)
     }
   }

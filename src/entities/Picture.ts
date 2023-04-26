@@ -1,8 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToOne, BaseEntity, ManyToOne } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, BaseEntity, ManyToOne } from "typeorm";
 import { ObjectType, Field, ID, InputType } from "type-graphql";
 import { Length } from "class-validator";
-import { Blog } from "./Blog";
-import { Post } from "./Post";
+// import { Blog } from "./Blog";
+// import { Post } from "./Post";
 import { User } from "./User";
 
 
@@ -24,7 +24,7 @@ export class Picture extends BaseEntity {
     @Field()
     link: string;
 
-    @ManyToOne(() => User, (user) => user.pictures, {onDelete: "CASCADE"})
+    @ManyToOne(() => User, { onDelete: "CASCADE" })
     @Field(() => User)
     user: User;
 
@@ -36,13 +36,8 @@ export class Picture extends BaseEntity {
     @Field(() => Date)
     updated_at: Date;
 
-    @OneToOne(() => Post, (post) => post.picture, { nullable: true, onDelete: 'CASCADE' })
-    @Field(() => Post, { nullable: true })
-    post: Post;
 
-    @OneToOne(() => Blog, (blog) => blog.picture, { nullable: true, onDelete: 'CASCADE' })
-    @Field(() => Blog, { nullable: true })
-    blog: Blog;
+
 }
 
 
