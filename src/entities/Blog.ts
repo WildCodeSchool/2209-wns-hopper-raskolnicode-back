@@ -5,7 +5,6 @@ import {
   ManyToOne,
   BaseEntity,
   OneToMany,
-  OneToOne
 } from "typeorm";
 import { ObjectType, Field, ID, InputType, } from "type-graphql";
 import { Length, MaxLength } from "class-validator";
