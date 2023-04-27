@@ -49,6 +49,7 @@ export class Post extends BaseEntity {
     nullable: true,
     onDelete: "CASCADE",
   })
+  
   @Field(() => [Comment], { nullable: true })
   comments: Comment[];
 
