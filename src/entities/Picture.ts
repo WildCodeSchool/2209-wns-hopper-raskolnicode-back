@@ -7,8 +7,6 @@ import {
 } from "typeorm";
 import { ObjectType, Field, ID, InputType } from "type-graphql";
 import { Length } from "class-validator";
-// import { Blog } from "./Blog";
-// import { Post } from "./Post";
 import { User } from "./User";
 
 const today = new Date();
@@ -30,7 +28,7 @@ export class Picture extends BaseEntity {
   link: string;
 
   @ManyToOne(() => User)
-  @Field(() => User, { nullable: true })
+  @Field(() => User)
   user: User;
 
   @Column({ default: today })
