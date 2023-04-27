@@ -97,7 +97,7 @@ export class PostsResolver {
   async getPost(@Arg("postId", () => ID) id: number): Promise<Post | null> {
     const post = await datasource.getRepository(Post).findOne({
       where: { id },
-      relations: { comments: {user:true}, blog: true, picture: true },
+      relations: { comments: { user: true }, blog: true, picture: true },
     });
     if (post === null) {
       throw new Error("Il n'y a pas d'article pour cette recherche");
