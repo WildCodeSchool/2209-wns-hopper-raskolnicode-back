@@ -1,68 +1,89 @@
-import { Resolver, Query, Mutation, Arg, Ctx, Authorized } from "type-graphql";
-import { Picture, PictureInput, UpdatePictureInput } from "../entities/Picture";
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Arg,
+  Ctx,
+  Authorized,
+  ID,
+} from "type-graphql";
+import { Picture, PictureInput } from "../entities/Picture";
 import datasource from "../utils";
 import { IContext } from "./Users";
 
 @Resolver()
-
 export class PicturesResolver {
+  @Query(() => [Picture])
+  async getPictures(): Promise<Picture[]> {
+    return await datasource
+      .getRepository(Picture)
+      .find({ relations: { user: true } });
+  }
 
-    @Query(() => [Picture])
-    async getPictures(): Promise<Picture[]> {
+  @Authorized()
+  @Mutation(() => Picture)
+  async createPicture(
+    @Arg("data", () => PictureInput) data: PictureInput,
+    @Ctx() context: IContext
+  ): Promise<Picture> {
+    const user = context.user;
+    if (user) {
+      const picture = { ...data, user };
+      return await datasource.getRepository(Picture).save(picture);
+    }
+  }
 
-        return await datasource.getRepository(Picture).find();
+  @Authorized()
+  @Mutation(() => Picture, { nullable: true })
+  async updatePicture(
+    @Arg("id", () => ID) id: number,
+    @Arg("name", { nullable: true }) name: string | null,
+    @Arg("link", { nullable: true }) link: string | null,
+    @Ctx() context: IContext
+  ): Promise<Picture | null> {
+    const user = context.user;
+    const picture = await datasource
+      .getRepository(Picture)
+      .findOne({ where: { id }, relations: { user: true } });
+
+    picture.updated_at = new Date();
+
+    if (picture === null) {
+      throw new Error("Il n'y a pas de photo pour cette recherche");
     }
 
-    // const comment = await datasource
-    // .getRepository(Comment)
-    // .findOne({ where: { id }, relations: { user: true } });
-
-    @Query(() => Picture, { nullable: true })
-    async picture(@Arg("id") id: number): Promise<Picture | undefined> {
-        return await Picture.findOne({ where: { id }, relations: ["post", "blog"] });
+    if (name != null) {
+      picture.name = name;
     }
 
-    @Authorized()
-    @Mutation(() => Picture)
-    async createPicture(
-        @Arg("data", () => PictureInput) data: PictureInput,
-        @Ctx() context: IContext,
-
-    ): Promise<Picture> {
-        const user = context.user;
-        if (user) {
-            const picture = { ...data, user };
-            return await datasource.getRepository(Picture).save(picture)
-        }
+    if (link !== null) {
+      picture.link = link;
     }
 
-
-    @Authorized()
-    @Mutation(() => Picture, { nullable: true })
-    async updatePicture(
-        @Arg("id") id: number,
-        @Arg("data") data: UpdatePictureInput
-    ): Promise<Picture | null> {
-        const picture = await Picture.findOne({ where: { id }, relations: ["post", "blog"] });
-
-        if (!picture) {
-            return null;
-        }
-
-        Object.assign(picture, data);
-        await picture.save();
-        return picture;
+    if (user.id === picture.user.id) {
+      return await datasource.getRepository(Picture).save(picture);
+    } else {
+      throw new Error("Vous n'êtes pas à l'origine de cette photo");
     }
+  }
 
-
-    @Mutation(() => Boolean)
-    async deletePicture(@Arg("id") id: number): Promise<boolean> {
-        const picture = await Picture.findOne({ where: { id } });
-        if (!picture) {
-            return false;
-        }
-
-        await picture.remove();
-        return true;
+  @Authorized()
+  @Mutation(() => Picture, { nullable: true })
+  async deletePicture(
+    @Arg("id", () => ID) id: number,
+    @Ctx() context: IContext
+  ): Promise<Picture> {
+    const user = context.user;
+    const picture = await datasource
+      .getRepository(Picture)
+      .findOne({ where: { id }, relations: { user: true } });
+    if (picture === null) {
+      throw new Error("Il n'y a pas de photo pour cette recherche");
     }
+    if (user.id === picture.user.id) {
+      return await picture.remove();
+    } else {
+      throw new Error("Vous n'êtes pas à l'origine de cette photo");
+    }
+  }
 }

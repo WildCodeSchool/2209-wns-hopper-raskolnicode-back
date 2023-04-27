@@ -6,7 +6,7 @@ import {
   BaseEntity,
   OneToMany,
 } from "typeorm";
-import { ObjectType, Field, ID, InputType, } from "type-graphql";
+import { ObjectType, Field, ID, InputType } from "type-graphql";
 import { Length, MaxLength } from "class-validator";
 import { User } from "./User";
 import { Post } from "./Post";
@@ -31,7 +31,6 @@ export class Blog extends BaseEntity {
   @MaxLength(250)
   description?: string;
 
-  
   @Column({ default: today })
   @Field(() => Date)
   created_at: Date;
@@ -48,11 +47,9 @@ export class Blog extends BaseEntity {
   @Field(() => [Post], { nullable: true })
   posts: Post[];
 
-  
-  @ManyToOne(() => Picture, { nullable: true })
+  @ManyToOne(() => Picture)
   @Field(() => Picture, { nullable: true })
   picture: Picture;
-
 }
 
 @InputType()
@@ -73,5 +70,5 @@ export class BlogInput {
   picture_name?: string;
 
   @Field({ nullable: true })
-  userId: number;
+  userId?: number;
 }

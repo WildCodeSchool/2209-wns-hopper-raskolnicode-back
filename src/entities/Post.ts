@@ -1,12 +1,18 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, BaseEntity, OneToMany, OneToOne } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  BaseEntity,
+  OneToMany,
+} from "typeorm";
 import { ObjectType, Field, ID, InputType } from "type-graphql";
-import { IsBoolean, Length } from "class-validator";
+import { IsBoolean, Length, MaxLength } from "class-validator";
 import { Comment } from "./Comment";
 import { Blog } from "./Blog";
 import { Picture } from "./Picture";
 
-
-const today = new Date()
+const today = new Date();
 
 @Entity()
 @ObjectType()
@@ -27,44 +33,39 @@ export class Post extends BaseEntity {
   @Field()
   summary: string;
 
-
   @Column()
   @Field()
   isArchived: boolean;
 
-  @Column({default: today})
+  @Column({ default: today })
   @Field(() => Date)
   created_at: Date;
 
-  @Column({default: today})
+  @Column({ default: today })
   @Field(() => Date)
   updated_at: Date;
 
-  @OneToMany(() => Comment, (comment) => comment.post, { nullable: true , onDelete: 'CASCADE' })
+  @OneToMany(() => Comment, (comment) => comment.post, {
+    nullable: true,
+    onDelete: "CASCADE",
+  })
   @Field(() => [Comment], { nullable: true })
   comments: Comment[];
 
-  @ManyToOne(() => Blog, (blog) => blog.posts, { nullable: false , onDelete: 'CASCADE' })
+  @ManyToOne(() => Blog, (blog) => blog.posts, {
+    nullable: false,
+    onDelete: "CASCADE",
+  })
   @Field(() => Blog, { nullable: false })
   blog: Blog;
 
-
-  @ManyToOne(() => Picture, { nullable: true, onDelete: 'CASCADE' })
+  @ManyToOne(() => Picture, { nullable: true, onDelete: "CASCADE" })
   @Field(() => Picture, { nullable: true })
   picture: Picture;
-
-
-  // @ManyToOne(() => Picture, (picture) => picture.posts, { nullable: true })
-  // @Field(() => Picture, { nullable: true })
-  // picture: Picture;
-
 }
-
-
 
 @InputType()
 export class PostInput {
-
   @Field()
   @Length(1, 400)
   title: string;
@@ -78,17 +79,19 @@ export class PostInput {
   summary: string;
 
   @Field()
-  pictureId?: number;
-
-  @Field()
   @IsBoolean()
   isArchived: boolean;
-}
 
+  @Field({ nullable: true })
+  picture_link?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(40)
+  picture_name?: string;
+}
 
 @InputType()
 export class UpdatePostInput {
-
   @Field({ nullable: true })
   @Length(1, 400)
   title: string;
@@ -102,9 +105,13 @@ export class UpdatePostInput {
   summary: string;
 
   @Field({ nullable: true })
-  pictureId?: number;
-
-  @Field({ nullable: true })
   @IsBoolean()
   isArchived: boolean;
+
+  @Field({ nullable: true })
+  picture_link?: string;
+
+  @Field({ nullable: true })
+  @MaxLength(40)
+  picture_name?: string;
 }

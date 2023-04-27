@@ -1,4 +1,12 @@
-import { Resolver, Mutation, Arg, Query, Authorized, ID, Ctx } from "type-graphql";
+import {
+  Resolver,
+  Mutation,
+  Arg,
+  Query,
+  Authorized,
+  ID,
+  Ctx,
+} from "type-graphql";
 import datasource from "../utils";
 import { Blog, BlogInput } from "../entities/Blog";
 import { IContext } from "./Users";
@@ -13,50 +21,52 @@ export class BlogsResolver {
     @Arg("data", () => BlogInput) data: BlogInput,
     @Ctx() context: IContext
   ): Promise<Blog> {
-    const user = context.user
+    const user = context.user;
     if (user) {
-
-      let picture 
+      let picture;
       if (data.picture_link) {
         picture = new Picture();
         picture.link = data.picture_link;
         picture.name = data.picture_name;
+        picture.user = user;
         await datasource.getRepository(Picture).save(picture);
       }
-      
-      const blog = { ...data, user, picture }
-      return await datasource.getRepository(Blog).save(blog)
+
+      const blog = { ...data, user, picture };
+      return await datasource.getRepository(Blog).save(blog);
     }
   }
 
   @Mutation(() => Blog)
   async createBlogByUser(
-    @Arg("data", () => BlogInput) data: BlogInput,
+    @Arg("data", () => BlogInput) data: BlogInput
   ): Promise<Blog> {
-    const user = await datasource.getRepository(User).findOne({ where: { id: data.userId}})
+    const user = await datasource
+      .getRepository(User)
+      .findOne({ where: { id: data.userId } });
     if (user) {
-      const blog = { ...data, user }
-      return await datasource.getRepository(Blog).save(blog)
+      const blog = { ...data, user };
+      return await datasource.getRepository(Blog).save(blog);
     }
   }
 
   @Authorized()
-   @Mutation(() => Blog, { nullable: true })
-    async deleteBlog(
+  @Mutation(() => Blog, { nullable: true })
+  async deleteBlog(
     @Arg("id", () => ID) id: number,
-    @Ctx() context: IContext)
-    : Promise<Blog> {
-    const user  = context.user
+    @Ctx() context: IContext
+  ): Promise<Blog> {
+    const user = context.user;
     const blog = await datasource
-    .getRepository(Blog)
-    .findOne({ where: { id }, relations : { user : true} });
+      .getRepository(Blog)
+      .findOne({ where: { id }, relations: { user: true } });
     if (blog === null) {
-      throw new Error('Il n\'y a pas de blog pour cette recherche')
+      throw new Error("Il n'y a pas de blog pour cette recherche");
     }
-    if(user.id === blog.user.id){
-      return await blog.remove()
-    }else{
-      throw new Error('Vous n\'êtes pas l\'auteur de ce blog')
+    if (user.id === blog.user.id) {
+      return await blog.remove();
+    } else {
+      throw new Error("Vous n'êtes pas l'auteur de ce blog");
     }
   }
 
@@ -67,17 +77,18 @@ export class BlogsResolver {
     @Arg("name", { nullable: true }) name: string | null,
     @Arg("description", { nullable: true }) description: string | null,
     @Arg("picture_link", { nullable: true }) pictureLink: string | null,
+    @Arg("picture_name", { nullable: true }) pictureName: string | null,
     @Ctx() context: IContext
   ): Promise<Blog | null> {
-    const user  = context.user
+    const user = context.user;
     const blog = await datasource
       .getRepository(Blog)
-      .findOne({ where: { id } , relations : { user : true} });
+      .findOne({ where: { id }, relations: { user: true } });
 
-    blog.created_at = new Date()
+    blog.updated_at = new Date();
 
     if (blog === null) {
-      throw new Error('Il n\'y a pas de blog pour cette recherche')
+      throw new Error("Il n'y a pas de blog pour cette recherche");
     }
 
     if (name != null) {
@@ -92,28 +103,34 @@ export class BlogsResolver {
       blog.picture.link = pictureLink;
     }
 
-    if(user.id === blog.user.id){
+    if (pictureName !== null) {
+      blog.picture.name = pictureName;
+    }
+
+    if (user.id === blog.user.id) {
       return await datasource.getRepository(Blog).save(blog);
-    }else{
-      throw new Error('Vous n\'êtes pas l\'auteur de ce blog')
+    } else {
+      throw new Error("Vous n'êtes pas l'auteur de ce blog");
     }
   }
 
   @Query(() => Blog, { nullable: true })
   async getBlog(@Arg("id", () => ID) id: number): Promise<Blog | null> {
-    const blog = await datasource
-      .getRepository(Blog)
-      .findOne({ where: { id },relations : { user: true , posts: true, picture: true}});
+    const blog = await datasource.getRepository(Blog).findOne({
+      where: { id },
+      relations: { user: true, posts: true, picture: true },
+    });
 
     if (blog === null) {
-      throw new Error('Il n\'y a pas de blog pour cette recherche')
+      throw new Error("Il n'y a pas de blog pour cette recherche");
     }
-    return blog
+    return blog;
   }
-  
+
   @Query(() => [Blog])
   async getBlogs(): Promise<Blog[]> {
-    console.log("**************************IN WORK ***************")
-    return await datasource.getRepository(Blog).find({ relations : { user: true , posts: true, picture: true} });
+    return await datasource
+      .getRepository(Blog)
+      .find({ relations: { user: true, posts: true, picture: true } });
   }
 }

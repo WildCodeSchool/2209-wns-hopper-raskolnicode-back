@@ -3,8 +3,6 @@ import { ObjectType, Field, ID, InputType } from "type-graphql";
 import { IsEmail, Length } from "class-validator";
 import { Comment } from "./Comment";
 import { Blog } from "./Blog";
-import { Picture } from "./Picture";
-
 
 @Entity()
 @ObjectType()
@@ -36,11 +34,6 @@ export class User {
   @OneToMany(() => Blog, (blog) => blog.user, { onDelete: "CASCADE" })
   @Field(() => [Blog], { nullable: true })
   blogs: Blog[];
-
-  // @OneToMany(() => Picture, (picture) => picture.user, { nullable: true })
-  // @Field(() => [Picture], { nullable: true })
-  // pictures: Picture[];
-
 }
 
 @InputType()
