@@ -118,7 +118,7 @@ export class BlogsResolver {
   async getBlog(@Arg("id", () => ID) id: number): Promise<Blog | null> {
     const blog = await datasource.getRepository(Blog).findOne({
       where: { id },
-      relations: { user: true, posts: true, picture: true },
+      relations: { user: true, posts: { picture: true }, picture: true },
     });
 
     if (blog === null) {
