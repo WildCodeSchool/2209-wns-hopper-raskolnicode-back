@@ -54,6 +54,10 @@ export class Blog extends BaseEntity {
 
 @InputType()
 export class BlogInput {
+
+  @Field(() => ID)
+  id: number;
+
   @Field()
   @Length(1, 50)
   name: string;
@@ -63,12 +67,12 @@ export class BlogInput {
   description: string;
 
   @Field({ nullable: true })
-  picture_link?: string;
+  picture_link: string;
 
   @Field({ nullable: true })
   @MaxLength(40)
-  picture_name?: string;
+  picture_name: string;
 
   @Field({ nullable: true })
-  userId?: number;
+  userId: number;
 }

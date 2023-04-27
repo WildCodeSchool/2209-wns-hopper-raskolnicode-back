@@ -73,17 +73,13 @@ export class BlogsResolver {
   @Authorized()
   @Mutation(() => Blog, { nullable: true })
   async updateBlog(
-    @Arg("id", () => ID) id: number,
-    @Arg("name", { nullable: true }) name: string | null,
-    @Arg("description", { nullable: true }) description: string | null,
-    @Arg("picture_link", { nullable: true }) pictureLink: string | null,
-    @Arg("picture_name", { nullable: true }) pictureName: string | null,
+    @Arg("data", () => BlogInput) data: BlogInput,
     @Ctx() context: IContext
   ): Promise<Blog | null> {
     const user = context.user;
     const blog = await datasource
       .getRepository(Blog)
-      .findOne({ where: { id }, relations: { user: true } });
+      .findOne({ where: { id: data.id }, relations: { user: true } });
 
     blog.updated_at = new Date();
 
@@ -91,20 +87,26 @@ export class BlogsResolver {
       throw new Error("Il n'y a pas de blog pour cette recherche");
     }
 
-    if (name != null) {
-      blog.name = name;
+    if (data.name != null) {
+      blog.name = data.name;
     }
 
-    if (description !== null) {
-      blog.description = description;
+    if (data.description !== null) {
+      blog.description = data.description;
     }
 
-    if (pictureLink !== null) {
-      blog.picture.link = pictureLink;
+    if (data.picture_link !== null || data.picture_name !== null) {
+      if (!blog.picture) {
+        blog.picture = new Picture();
+      }
     }
 
-    if (pictureName !== null) {
-      blog.picture.name = pictureName;
+    if (data.picture_link !== null) {
+      blog.picture.link = data.picture_link;
+    }
+
+    if (data.picture_name !== null) {
+      blog.picture.name = data.picture_name;
     }
 
     if (user.id === blog.user.id) {
