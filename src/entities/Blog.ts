@@ -10,6 +10,7 @@ import { ObjectType, Field, ID, InputType } from "type-graphql";
 import { Length, MaxLength } from "class-validator";
 import { User } from "./User";
 import { Post } from "./Post";
+import { Picture } from "./Picture";
 
 const today = new Date();
 
@@ -30,11 +31,6 @@ export class Blog extends BaseEntity {
   @MaxLength(250)
   description?: string;
 
-  @Column()
-  @Field({ nullable: true })
-  @MaxLength(250)
-  image_path?: string;
-  
   @Column({ default: today })
   @Field(() => Date)
   created_at: Date;
@@ -48,8 +44,12 @@ export class Blog extends BaseEntity {
   user: User;
 
   @OneToMany(() => Post, (post) => post.blog, { onDelete: "CASCADE" })
-  @Field(() => [Post], { nullable: false })
+  @Field(() => [Post], { nullable: true })
   posts: Post[];
+
+  @ManyToOne(() => Picture)
+  @Field(() => Picture, { nullable: true })
+  picture: Picture;
 }
 
 @InputType()
@@ -63,9 +63,12 @@ export class BlogInput {
   description: string;
 
   @Field({ nullable: true })
-  @MaxLength(250)
-  image_path?: string;
+  picture_link?: string;
 
   @Field({ nullable: true })
-  userId: number;
+  @MaxLength(40)
+  picture_name?: string;
+
+  @Field({ nullable: true })
+  userId?: number;
 }
