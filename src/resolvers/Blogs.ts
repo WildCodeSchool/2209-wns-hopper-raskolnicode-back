@@ -129,8 +129,8 @@ export class BlogsResolver {
 
   @Query(() => [Blog])
   async getBlogs(): Promise<Blog[]> {
-    return await datasource
-      .getRepository(Blog)
-      .find({ relations: { user: true, posts: true, picture: true } });
+    return await datasource.getRepository(Blog).find({
+      relations: { user: true, posts: true, picture: { user: true } },
+    });
   }
 }
