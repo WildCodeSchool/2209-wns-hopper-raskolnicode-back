@@ -1,9 +1,15 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, BaseEntity } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  BaseEntity,
+} from "typeorm";
 import { ObjectType, Field, ID, InputType } from "type-graphql";
-import { Post } from './Post'
-import { User } from './User'
+import { Post } from "./Post";
+import { User } from "./User";
 
-const today = new Date()
+const today = new Date();
 
 @Entity()
 @ObjectType()
@@ -16,20 +22,18 @@ export class Comment extends BaseEntity {
   @Field()
   text: string;
 
-  @Column({default: today})
+  @Column({ default: today })
   @Field(() => Date)
   created_at: Date;
 
-  @ManyToOne(() => User, (user) => user.comments, { onDelete: 'CASCADE' })
+  @ManyToOne(() => User, (user) => user.comments, { onDelete: "CASCADE" })
   @Field(() => User)
-  user: User
+  user: User;
 
-  @ManyToOne(() => Post, (Post) => Post.comments, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Post, (post) => post.comments, { onDelete: "CASCADE" })
   @Field(() => Post)
-  post: Post
-
+  post: Post;
 }
-
 
 @InputType()
 export class CommentInput {

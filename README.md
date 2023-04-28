@@ -1,4 +1,6 @@
-# Node TS Starter!
+# Welcome to the Starblog project!
+
+## Node TS Starter
 
 This boilerplate contains:
 
@@ -24,3 +26,13 @@ npm i
 ```
 
 Please note that everytime you install a new NPM package, you should rerun you docker compose command.
+
+## Put into stagging or production
+
+### Stagging
+
+- Make a PR `dev` on `stagging` to update the stagging online
+
+### Prod
+
+- Make a PR `stagging` on `main`, connect to the remote server and run the script `.sh`
