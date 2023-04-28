@@ -91,6 +91,7 @@ export class PostInput {
   picture_name?: string;
 }
 
+
 @InputType()
 export class UpdatePostInput {
   @Field({ nullable: true })
