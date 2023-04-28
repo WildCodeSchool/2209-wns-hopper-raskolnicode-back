@@ -10,7 +10,7 @@ import { ObjectType, Field, ID, InputType } from "type-graphql";
 import { Length, MaxLength } from "class-validator";
 import { User } from "./User";
 import { Post } from "./Post";
-import { Picture } from "./Picture";
+import { Picture, PictureInput } from "./Picture";
 
 const today = new Date();
 
@@ -55,9 +55,6 @@ export class Blog extends BaseEntity {
 @InputType()
 export class BlogInput {
 
-  @Field(() => ID)
-  id: number;
-
   @Field()
   @Length(1, 50)
   name: string;
@@ -66,13 +63,11 @@ export class BlogInput {
   @Length(1, 500)
   description: string;
 
-  @Field({ nullable: true })
-  picture_link: string;
-
-  @Field({ nullable: true })
-  @MaxLength(40)
-  picture_name: string;
+  @Field(() => PictureInput, { nullable: true })
+  picture?: PictureInput;
 
   @Field({ nullable: true })
   userId: number;
 }
+
+

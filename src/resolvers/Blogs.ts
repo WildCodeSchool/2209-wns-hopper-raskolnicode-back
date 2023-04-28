@@ -24,10 +24,10 @@ export class BlogsResolver {
     const user = context.user;
     if (user) {
       let picture;
-      if (data.picture_link) {
+      if (data.picture) {
         picture = new Picture();
-        picture.link = data.picture_link;
-        picture.name = data.picture_name;
+        picture.link = data.picture.link;
+        picture.name = data.picture.name;
         picture.user = user;
         await datasource.getRepository(Picture).save(picture);
       }
@@ -73,13 +73,14 @@ export class BlogsResolver {
   @Authorized()
   @Mutation(() => Blog, { nullable: true })
   async updateBlog(
+    @Arg("id", () => ID) id: number,
     @Arg("data", () => BlogInput) data: BlogInput,
     @Ctx() context: IContext
   ): Promise<Blog | null> {
     const user = context.user;
     const blog = await datasource
       .getRepository(Blog)
-      .findOne({ where: { id: data.id }, relations: { user: true } });
+      .findOne({ where: { id }, relations: { user: true } });
 
     blog.updated_at = new Date();
 
@@ -87,7 +88,7 @@ export class BlogsResolver {
       throw new Error("Il n'y a pas de blog pour cette recherche");
     }
 
-    if (data.name != null) {
+    if (data.name !== null) {
       blog.name = data.name;
     }
 
@@ -95,22 +96,17 @@ export class BlogsResolver {
       blog.description = data.description;
     }
 
-    if (data.picture_link !== null || data.picture_name !== null) {
-      if (!blog.picture) {
-        blog.picture = new Picture();
-      }
-    }
+    let picture = blog.picture;
 
-    if (data.picture_link !== null) {
-      blog.picture.link = data.picture_link;
-    }
-
-    if (data.picture_name !== null) {
-      blog.picture.name = data.picture_name;
+    if (data.picture) {
+      picture = new Picture();
+      picture.link = data.picture.link;
+      picture.name = data.picture.name;
+      await datasource.getRepository(Picture).save(picture);
     }
 
     if (user.id === blog.user.id) {
-      return await datasource.getRepository(Blog).save(blog);
+      return await datasource.getRepository(Blog).save({ ...blog, picture });
     } else {
       throw new Error("Vous n'êtes pas l'auteur de ce blog");
     }
