@@ -75,6 +75,7 @@ export class BlogsResolver {
   async updateBlog(
     @Arg("id", () => ID) id: number,
     @Arg("data", () => BlogInput) data: BlogInput,
+
     @Ctx() context: IContext
   ): Promise<Blog | null> {
     const user = context.user;
@@ -90,6 +91,7 @@ export class BlogsResolver {
 
     if (data.name !== null) {
       blog.name = data.name;
+
     }
 
     if (data.description !== null) {
@@ -103,6 +105,7 @@ export class BlogsResolver {
       picture.link = data.picture.link;
       picture.name = data.picture.name;
       await datasource.getRepository(Picture).save(picture);
+
     }
 
     if (user.id === blog.user.id) {

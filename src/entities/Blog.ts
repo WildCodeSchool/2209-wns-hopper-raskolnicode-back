@@ -54,7 +54,6 @@ export class Blog extends BaseEntity {
 
 @InputType()
 export class BlogInput {
-
   @Field()
   @Length(1, 50)
   name: string;
@@ -66,8 +65,9 @@ export class BlogInput {
   @Field(() => PictureInput, { nullable: true })
   picture?: PictureInput;
 
+
   @Field({ nullable: true })
-  userId: number;
+  userId?: number;
 }
 
 
