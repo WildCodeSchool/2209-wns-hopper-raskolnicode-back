@@ -24,10 +24,10 @@ export class BlogsResolver {
     const user = context.user;
     if (user) {
       let picture;
-      if (data.picture_link) {
+      if (data.picture) {
         picture = new Picture();
-        picture.link = data.picture_link;
-        picture.name = data.picture_name;
+        picture.link = data.picture.link;
+        picture.name = data.picture.name;
         picture.user = user;
         await datasource.getRepository(Picture).save(picture);
       }
@@ -74,10 +74,8 @@ export class BlogsResolver {
   @Mutation(() => Blog, { nullable: true })
   async updateBlog(
     @Arg("id", () => ID) id: number,
-    @Arg("name", { nullable: true }) name: string | null,
-    @Arg("description", { nullable: true }) description: string | null,
-    @Arg("picture_link", { nullable: true }) pictureLink: string | null,
-    @Arg("picture_name", { nullable: true }) pictureName: string | null,
+    @Arg("data", () => BlogInput) data: BlogInput,
+
     @Ctx() context: IContext
   ): Promise<Blog | null> {
     const user = context.user;
@@ -91,24 +89,27 @@ export class BlogsResolver {
       throw new Error("Il n'y a pas de blog pour cette recherche");
     }
 
-    if (name != null) {
-      blog.name = name;
+    if (data.name !== null) {
+      blog.name = data.name;
+
     }
 
-    if (description !== null) {
-      blog.description = description;
+    if (data.description !== null) {
+      blog.description = data.description;
     }
 
-    if (pictureLink !== null) {
-      blog.picture.link = pictureLink;
-    }
+    let picture = blog.picture;
 
-    if (pictureName !== null) {
-      blog.picture.name = pictureName;
+    if (data.picture) {
+      picture = new Picture();
+      picture.link = data.picture.link;
+      picture.name = data.picture.name;
+      await datasource.getRepository(Picture).save(picture);
+
     }
 
     if (user.id === blog.user.id) {
-      return await datasource.getRepository(Blog).save(blog);
+      return await datasource.getRepository(Blog).save({ ...blog, picture });
     } else {
       throw new Error("Vous n'êtes pas l'auteur de ce blog");
     }
