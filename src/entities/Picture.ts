@@ -43,7 +43,6 @@ export class Picture extends BaseEntity {
 @InputType()
 export class PictureInput {
   @Field()
-  @Length(1, 50)
   name: string;
 
   @Field()
