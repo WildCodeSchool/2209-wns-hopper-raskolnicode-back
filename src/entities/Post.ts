@@ -7,10 +7,10 @@ import {
   OneToMany,
 } from "typeorm";
 import { ObjectType, Field, ID, InputType } from "type-graphql";
-import { IsBoolean, Length, MaxLength } from "class-validator";
+import { IsBoolean, Length } from "class-validator";
 import { Comment } from "./Comment";
 import { Blog } from "./Blog";
-import { Picture } from "./Picture";
+import { Picture, PictureInput } from "./Picture";
 
 const today = new Date();
 
@@ -83,12 +83,8 @@ export class PostInput {
   @IsBoolean()
   isArchived: boolean;
 
-  @Field({ nullable: true })
-  picture_link?: string;
-
-  @Field({ nullable: true })
-  @MaxLength(40)
-  picture_name?: string;
+  @Field(() => PictureInput, { nullable: true })
+  picture?: PictureInput;
 }
 
 @InputType()
@@ -109,10 +105,6 @@ export class UpdatePostInput {
   @IsBoolean()
   isArchived: boolean;
 
-  @Field({ nullable: true })
-  picture_link?: string;
-
-  @Field({ nullable: true })
-  @MaxLength(40)
-  picture_name?: string;
+  @Field(() => PictureInput, { nullable: true })
+  picture?: PictureInput;
 }
