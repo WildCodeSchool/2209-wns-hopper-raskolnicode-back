@@ -53,11 +53,11 @@ export class CommentsResolver {
       const user  = context.user
       const comment = await datasource
       .getRepository(Comment)
-      .findOne({ where: { id } ,relations: { user: true }});
+      .findOne({ where: { id } ,relations: { user: true,post:{blog:{user:true}} }});
       if (comment === null) {
         throw new Error('Ce commentaire n\'existe pas')
       }
-      if(user.id == comment.user.id){
+      if(user.id == comment.user.id || user.id == comment.post.blog.user.id){
         return await comment.remove();
       }else{
         throw new Error('Vous n\'êtes pas l\'auteur de ce commentaire')
