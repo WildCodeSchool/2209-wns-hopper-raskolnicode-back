@@ -113,27 +113,6 @@ export class UsersResolver {
 
   }
 
-
-
-
-  //   @Authorized()
-  //   @Query(() => User, { nullable: true })
-  //   async loggedUser(@Ctx() context: IContext): Promise<User | null> {
-
-  //   const userRepository = datasource.getRepository(User);
-
-  // const user = await userRepository.findOne({
-  //   where: { id: context.user.id },
-  //   relations: {blogs: {picture: true}}
-  // });
-
-  //   return user;
-
-
-
-
-
-  // @Authorized("SUPERADMIN")
   @Query(() => [User])
   async getUsers(): Promise<User[]> {
     return await datasource
