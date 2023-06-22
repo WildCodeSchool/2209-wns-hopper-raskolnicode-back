@@ -17,8 +17,11 @@ export class CommentsResolver {
   ): Promise<Comment> {
     const user : User = context.user
     const post : Post = await datasource.getRepository(Post).findOne({ where: { id }, relations : { comments: true } })
+
+
     if (user) {
-      const comment = { ...data,user,post}
+      let created_at = new Date();;
+      const comment = { ...data,user,post, created_at}
       return await datasource.getRepository(Comment).save(comment)
     }
   }
