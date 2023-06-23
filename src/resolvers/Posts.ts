@@ -25,18 +25,17 @@ export class PostsResolver {
     const user = context.user;
     const blog = await datasource
       .getRepository(Blog)
-      .findOne({ where: { id } });
+      .findOne({ where: { id }, relations: { user: true } });
     if (blog) {
-      let picture;
-      if (data.picture_link) {
-        picture = new Picture();
-        picture.link = data.picture_link;
-        picture.name = data.picture_name;
-        picture.user = user;
-        await datasource.getRepository(Picture).save(picture);
-      }
+      const picture = new Picture();
+      picture.link = data.picture?.link;
+      picture.name = data.picture?.name;
+      picture.user = user;
+      await datasource.getRepository(Picture).save(picture);
       const post = { ...data, picture, blog };
-      return await datasource.getRepository(Post).save(post);
+      return await datasource
+        .getRepository(Post)
+        .save({ ...post, created_at: new Date() });
     }
   }
 
@@ -69,18 +68,28 @@ export class PostsResolver {
     @Ctx() context: IContext
   ): Promise<Post | null> {
     const user = context.user;
-    const post = await datasource
-      .getRepository(Post)
-      .findOne({ where: { id }, relations: { blog: { user: true } } });
+    const post = await datasource.getRepository(Post).findOne({
+      where: { id },
+      relations: { blog: { user: true }, picture: true },
+    });
 
     if (post === null) {
       throw new Error("Il n'y a pas de d'article pour cette recherche");
     }
 
+    let picture = post.picture;
+    if (data.picture) {
+      picture = new Picture();
+      picture.link = data.picture?.link;
+      picture.name = data.picture?.name;
+      picture.user = user;
+      await datasource.getRepository(Picture).save(picture);
+    }
+
     if (user.id === post.blog.user.id) {
       return await datasource
         .getRepository(Post)
-        .save({ ...post, ...data, updated_at: new Date() });
+        .save({ ...post, ...data, picture, updated_at: new Date() });
     } else {
       throw new Error("Vous n'êtes pas l'auteur de cette article");
     }
@@ -97,11 +106,34 @@ export class PostsResolver {
   async getPost(@Arg("postId", () => ID) id: number): Promise<Post | null> {
     const post = await datasource.getRepository(Post).findOne({
       where: { id },
-      relations: { comments: { user: true }, blog: true, picture: true },
+      relations: {
+        comments: { user: true },
+        blog: { user: true },
+        picture: true,
+      },
     });
     if (post === null) {
       throw new Error("Il n'y a pas d'article pour cette recherche");
     }
     return post;
+  }
+
+  @Authorized()
+  @Mutation(() => Post)
+  async toggleIsArchived(
+    @Arg("id", () => ID) id: number,
+    @Ctx() context: IContext
+  ): Promise<Post> {
+    const user = context.user;
+    const post = await datasource.getRepository(Post).findOne({
+      where: { id },
+      relations: { blog: { user: true }, picture: true },
+    });
+
+    if (user.id === post.blog.user.id) {
+      return await datasource
+        .getRepository(Post)
+        .save({ ...post, isArchived: !post.isArchived });
+    }
   }
 }

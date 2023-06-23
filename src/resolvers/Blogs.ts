@@ -33,7 +33,9 @@ export class BlogsResolver {
       }
 
       const blog = { ...data, user, picture };
-      return await datasource.getRepository(Blog).save(blog);
+      return await datasource
+        .getRepository(Blog)
+        .save({ ...blog, created_at: new Date() });
     }
   }
 
@@ -46,7 +48,9 @@ export class BlogsResolver {
       .findOne({ where: { id: data.userId } });
     if (user) {
       const blog = { ...data, user };
-      return await datasource.getRepository(Blog).save(blog);
+      return await datasource
+        .getRepository(Blog)
+        .save({ ...blog, created_at: new Date() });
     }
   }
 
@@ -91,7 +95,6 @@ export class BlogsResolver {
 
     if (data.name !== null) {
       blog.name = data.name;
-
     }
 
     if (data.description !== null) {
@@ -105,7 +108,6 @@ export class BlogsResolver {
       picture.link = data.picture.link;
       picture.name = data.picture.name;
       await datasource.getRepository(Picture).save(picture);
-
     }
 
     if (user.id === blog.user.id) {
