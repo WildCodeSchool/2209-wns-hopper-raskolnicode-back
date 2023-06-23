@@ -32,9 +32,10 @@ export class PostsResolver {
       picture.name = data.picture?.name;
       picture.user = user;
       await datasource.getRepository(Picture).save(picture);
-      console.log('***blog', blog)
       const post = { ...data, picture, blog };
-      return await datasource.getRepository(Post).save(post);
+      return await datasource
+        .getRepository(Post)
+        .save({ ...post, created_at: new Date() });
     }
   }
 
@@ -67,9 +68,10 @@ export class PostsResolver {
     @Ctx() context: IContext
   ): Promise<Post | null> {
     const user = context.user;
-    const post = await datasource
-      .getRepository(Post)
-      .findOne({ where: { id }, relations: { blog: { user: true }, picture: true } });
+    const post = await datasource.getRepository(Post).findOne({
+      where: { id },
+      relations: { blog: { user: true }, picture: true },
+    });
 
     if (post === null) {
       throw new Error("Il n'y a pas de d'article pour cette recherche");
@@ -104,14 +106,17 @@ export class PostsResolver {
   async getPost(@Arg("postId", () => ID) id: number): Promise<Post | null> {
     const post = await datasource.getRepository(Post).findOne({
       where: { id },
-      relations: { comments: { user: true }, blog: {user:true}, picture: true },
+      relations: {
+        comments: { user: true },
+        blog: { user: true },
+        picture: true,
+      },
     });
     if (post === null) {
       throw new Error("Il n'y a pas d'article pour cette recherche");
     }
     return post;
   }
-
 
   @Authorized()
   @Mutation(() => Post)
@@ -120,15 +125,15 @@ export class PostsResolver {
     @Ctx() context: IContext
   ): Promise<Post> {
     const user = context.user;
-    const post = await datasource
-      .getRepository(Post)
-      .findOne({ where: { id }, relations: { blog: { user: true }, picture: true } });
+    const post = await datasource.getRepository(Post).findOne({
+      where: { id },
+      relations: { blog: { user: true }, picture: true },
+    });
 
     if (user.id === post.blog.user.id) {
       return await datasource
         .getRepository(Post)
         .save({ ...post, isArchived: !post.isArchived });
     }
-
   }
 }

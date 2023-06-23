@@ -37,7 +37,7 @@ export class Post extends BaseEntity {
   @Field()
   isArchived: boolean;
 
-  @Column({ default: today })
+  @Column()
   @Field(() => Date)
   created_at: Date;
 
@@ -49,7 +49,6 @@ export class Post extends BaseEntity {
     nullable: true,
     onDelete: "CASCADE",
   })
-  
   @Field(() => [Comment], { nullable: true })
   comments: Comment[];
 
