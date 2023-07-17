@@ -34,6 +34,10 @@ export class User {
   @OneToMany(() => Blog, (blog) => blog.user, { onDelete: "CASCADE" })
   @Field(() => [Blog], { nullable: true })
   blogs: Blog[];
+  
+
+
+  
 }
 
 @InputType()
