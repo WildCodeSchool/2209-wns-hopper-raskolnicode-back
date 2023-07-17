@@ -115,4 +115,19 @@ export class UsersResolver {
       .getRepository(User)
       .findOne({ where: { role: "SUPERADMIN" } });
   }
+
+
+  @Authorized()
+  @Mutation(() => User, { nullable: true })
+  async becomePremium(
+    @Arg("id") id: number,
+    @Ctx() context: IContext
+  ): Promise<any> {
+    const user = context.user
+    console.log('************LOG', user.id, id)
+    if (user.id === id) {
+      console.log('****ITS GOOOD')
+      return await datasource.getRepository(User).save({ ...user, isPremium: true });
+    }
+  }
 }

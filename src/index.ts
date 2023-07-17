@@ -8,13 +8,21 @@ import { BlogsResolver} from "./resolvers/Blogs";
 import { CommentsResolver } from "./resolvers/Comments";
 import { customAuthChecker } from "./auth";
 import { PicturesResolver } from "./resolvers/Pictures";
+import { StripeResolver } from "./resolvers/Stripe";
 
 const PORT = 5000;
 
 async function bootstrap(): Promise<void> {
   // ... Building schema here
   const schema = await buildSchema({
-    resolvers: [UsersResolver, PostsResolver, BlogsResolver, CommentsResolver, PicturesResolver],
+    resolvers: [
+      UsersResolver, 
+      PostsResolver, 
+      BlogsResolver, 
+      CommentsResolver, 
+      PicturesResolver, 
+      StripeResolver
+    ],
     authChecker: customAuthChecker
   });
 
