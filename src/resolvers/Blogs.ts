@@ -12,6 +12,8 @@ import { Blog, BlogInput } from "../entities/Blog";
 import { IContext } from "./Users";
 import { User } from "../entities/User";
 import { Picture } from "../entities/Picture";
+import { EntityManager } from 'typeorm';
+
 
 @Resolver()
 export class BlogsResolver {
@@ -23,21 +25,24 @@ export class BlogsResolver {
   ): Promise<Blog> {
     const user = context.user;
     if (user) {
-      let picture;
-      if (data.picture) {
-        picture = new Picture();
-        picture.link = data.picture.link;
-        picture.name = data.picture.name;
-        picture.user = user;
-        await datasource.getRepository(Picture).save(picture);
-      }
+      return await datasource.manager.transaction(async (transactionalEntityManager: EntityManager) => {
+        let picture;
+        if (data.picture) {
+          picture = new Picture();
+          picture.link = data.picture.link;
+          picture.name = data.picture.name;
+          picture.user = user;
+          await transactionalEntityManager.save(picture);
+        }
 
-      const blog = { ...data, user, picture };
-      return await datasource
-        .getRepository(Blog)
-        .save({ ...blog, created_at: new Date() });
+        const blog = { ...data, user, picture, created_at: new Date() };
+        return await transactionalEntityManager.save(Blog, blog);
+      });
     }
+    throw new Error('Unauthorized');
   }
+
+
 
   @Mutation(() => Blog)
   async createBlogByUser(
