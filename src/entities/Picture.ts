@@ -38,6 +38,8 @@ export class Picture extends BaseEntity {
   @Column({ default: today })
   @Field(() => Date)
   updated_at: Date;
+
+  
 }
 
 @InputType()

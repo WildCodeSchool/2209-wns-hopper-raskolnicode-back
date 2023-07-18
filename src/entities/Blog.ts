@@ -31,7 +31,7 @@ export class Blog extends BaseEntity {
   @MaxLength(250)
   description?: string;
 
-  @Column({ default: today })
+  @Column()
   @Field(() => Date)
   created_at: Date;
 

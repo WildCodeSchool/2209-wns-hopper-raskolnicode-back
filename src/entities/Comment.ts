@@ -9,7 +9,7 @@ import { ObjectType, Field, ID, InputType } from "type-graphql";
 import { Post } from "./Post";
 import { User } from "./User";
 
-const today = new Date();
+// const today = new Date();
 
 @Entity()
 @ObjectType()
@@ -22,7 +22,7 @@ export class Comment extends BaseEntity {
   @Field()
   text: string;
 
-  @Column({ default: today })
+  @Column()
   @Field(() => Date)
   created_at: Date;
 
