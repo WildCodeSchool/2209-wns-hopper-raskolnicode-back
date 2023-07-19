@@ -35,9 +35,6 @@ export class User {
   @Field(() => [Blog], { nullable: true })
   blogs: Blog[];
   
-
-
-  
 }
 
 @InputType()

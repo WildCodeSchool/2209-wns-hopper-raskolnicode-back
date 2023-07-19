@@ -17,6 +17,8 @@ import { EntityManager } from 'typeorm';
 
 @Resolver()
 export class BlogsResolver {
+
+
   @Authorized()
   @Mutation(() => Blog)
   async createBlog(
@@ -25,7 +27,9 @@ export class BlogsResolver {
   ): Promise<Blog> {
     const user = context.user;
     if (user) {
-      return await datasource.manager.transaction(async (transactionalEntityManager: EntityManager) => {
+
+      // return await datasource.manager.transaction(async (transactionalEntityManager: EntityManager) => {
+      return await datasource.manager.transaction("READ COMMITTED", async (transactionalEntityManager: EntityManager) => {
         let picture;
         if (data.picture) {
           picture = new Picture();
@@ -42,8 +46,7 @@ export class BlogsResolver {
     throw new Error('Unauthorized');
   }
 
-
-
+  
   @Mutation(() => Blog)
   async createBlogByUser(
     @Arg("data", () => BlogInput) data: BlogInput
