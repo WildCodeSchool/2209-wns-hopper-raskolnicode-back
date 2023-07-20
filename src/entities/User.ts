@@ -1,8 +1,9 @@
-import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany, ManyToMany, ManyToOne } from "typeorm";
 import { ObjectType, Field, ID, InputType } from "type-graphql";
 import { IsEmail, Length } from "class-validator";
 import { Comment } from "./Comment";
 import { Blog } from "./Blog";
+import { Transaction } from "./Transaction";
 
 @Entity()
 @ObjectType()
@@ -34,10 +35,13 @@ export class User {
   @OneToMany(() => Blog, (blog) => blog.user, { onDelete: "CASCADE" })
   @Field(() => [Blog], { nullable: true })
   blogs: Blog[];
-  
 
+  @Column({ default: false })
+  @Field()
+  isPremium: boolean;
 
-  
+  @OneToMany(() => Transaction, transaction => transaction.user)
+  transactions: Transaction[]
 }
 
 @InputType()
