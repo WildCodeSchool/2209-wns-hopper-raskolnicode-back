@@ -9,6 +9,7 @@ import { CommentsResolver } from "./resolvers/Comments";
 import { customAuthChecker } from "./auth";
 import { PicturesResolver } from "./resolvers/Pictures";
 import { StripeResolver } from "./resolvers/Stripe";
+import { TransactionsResolver } from "./resolvers/Transactions";
 
 const PORT = 5000;
 
@@ -21,7 +22,8 @@ async function bootstrap(): Promise<void> {
       BlogsResolver, 
       CommentsResolver, 
       PicturesResolver, 
-      StripeResolver
+      StripeResolver,
+      TransactionsResolver
     ],
     authChecker: customAuthChecker
   });
